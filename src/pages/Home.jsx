@@ -1,6 +1,209 @@
 import { useEffect, useState, useRef } from "react";
 import { motion, AnimatePresence, useScroll, useTransform, useSpring, useMotionValue } from "framer-motion";
 
+
+/* ─── MOBILE HELPER ─── */
+function useIsMobile() {
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth <= 768);
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  }, []);
+
+  return isMobile;
+}
+
+
+
+
+/* ─── RESPONSIVE GLOBAL FIXES ─── */
+function ResponsiveGlobalStyles() {
+  return (
+    <style>{`
+      html, body, #root {
+        width: 100%;
+        max-width: 100%;
+        overflow-x: hidden;
+      }
+
+      @media (max-width: 900px) {
+        * { cursor: auto !important; }
+        a, button { cursor: pointer !important; }
+
+        [style*="mix-blend-mode: difference"][style*="position: fixed"],
+        [style*="right: 28px"][style*="position: fixed"] {
+          display: none !important;
+        }
+
+        [style*="padding: 0px 48px"],
+        [style*="padding: 0 48px"],
+        [style*="padding: 120px 48px"],
+        [style*="padding: 130px 48px"],
+        [style*="padding: 28px 48px"],
+        [style*="padding: 0px 48px 120px"],
+        [style*="padding: 0 48px 120px"],
+        [style*="padding: 0px 48px 150px"],
+        [style*="padding: 0 48px 150px"],
+        [style*="padding: 0px 48px 90px"],
+        [style*="padding: 0 48px 90px"] {
+          padding-left: 20px !important;
+          padding-right: 20px !important;
+        }
+
+        section[style*="min-height: 100vh"] {
+          min-height: auto !important;
+          padding-top: 112px !important;
+          padding-bottom: 72px !important;
+        }
+
+        [style*="max-width: 1200px"] {
+          max-width: 100% !important;
+        }
+
+        [style*="grid-template-columns: repeat(4, 1fr)"],
+        [style*="grid-template-columns: repeat(3, 1fr)"],
+        [style*="grid-template-columns: repeat(2, 1fr)"],
+        [style*="grid-template-columns: 380px 1fr"],
+        [style*="grid-template-columns: 1fr 1fr"],
+        [style*="grid-template-columns: 72px 1fr"] {
+          grid-template-columns: 1fr !important;
+          gap: 18px !important;
+        }
+
+        [style*="height: 360px"] {
+          height: 225px !important;
+        }
+
+        [style*="padding: 52px"] {
+          padding: 28px 20px !important;
+        }
+
+        [style*="padding: 80px"] {
+          padding: 42px 22px !important;
+        }
+
+        [style*="padding: 32px 28px"] {
+          padding: 24px 20px !important;
+        }
+
+        [style*="padding: 28px 40px"] {
+          padding: 22px 20px !important;
+        }
+
+        [style*="gap: 72px"] {
+          gap: 32px !important;
+        }
+
+        [style*="display: flex"][style*="justify-content: center"] {
+          flex-wrap: wrap !important;
+        }
+
+        h1[style] {
+          font-size: clamp(42px, 15vw, 72px) !important;
+          line-height: 0.95 !important;
+        }
+
+        h2[style] {
+          font-size: clamp(26px, 9vw, 40px) !important;
+          line-height: 1.08 !important;
+        }
+
+        p[style] {
+          max-width: 100% !important;
+        }
+
+        
+        /* Mobile portfolio polish */
+        header nav {
+          display: none !important;
+        }
+
+        header [style*="gap: 8px"][style*="align-items: center"] {
+          gap: 6px !important;
+        }
+
+        [style*="grid-template-columns: 88px 1fr auto"] {
+          grid-template-columns: 1fr !important;
+          gap: 18px !important;
+        }
+
+        [style*="grid-template-columns: 88px 1fr auto"] [style*="align-items: flex-end"] {
+          display: none !important;
+        }
+
+        [style*="padding: 32px 40px"][style*="border-radius: 18px"] {
+          padding: 24px 22px !important;
+          border-radius: 22px !important;
+          background: rgba(255,255,255,0.026) !important;
+        }
+
+        [style*="font-size: 23px"][style*="letter-spacing: -0.035em"] {
+          font-size: 22px !important;
+          line-height: 1.12 !important;
+        }
+
+        [style*="color: rgba(255,255,255,0.35)"][style*="line-height: 1.75"] {
+          color: rgba(255,255,255,0.48) !important;
+        }
+
+        footer[style] {
+          flex-direction: column !important;
+          gap: 14px !important;
+          text-align: center !important;
+        }
+      }
+
+      @media (max-width: 520px) {
+        [style*="padding: 0px 48px"],
+        [style*="padding: 0 48px"],
+        [style*="padding: 120px 48px"],
+        [style*="padding: 130px 48px"],
+        [style*="padding: 28px 48px"],
+        [style*="padding: 0px 48px 120px"],
+        [style*="padding: 0 48px 120px"],
+        [style*="padding: 0px 48px 150px"],
+        [style*="padding: 0 48px 150px"],
+        [style*="padding: 0px 48px 90px"],
+        [style*="padding: 0 48px 90px"] {
+          padding-left: 16px !important;
+          padding-right: 16px !important;
+        }
+
+        [style*="height: 360px"] {
+          height: 190px !important;
+        }
+
+        [style*="padding: 16px 36px"],
+        [style*="padding: 18px 44px"] {
+          width: 100% !important;
+          max-width: 320px !important;
+          padding: 14px 22px !important;
+        }
+
+        [style*="padding: 80px"] {
+          padding: 36px 18px !important;
+          border-radius: 22px !important;
+        }
+
+        [style*="padding: 52px"] {
+          padding: 24px 16px !important;
+          border-radius: 22px !important;
+        }
+
+        [style*="font-size: 36px"] {
+          font-size: 28px !important;
+        }
+
+        [style*="letter-spacing: 0.24em"] {
+          letter-spacing: 0.15em !important;
+        }
+      }
+    `}</style>
+  );
+}
 /* ─── PAGE TRANSITION CURTAIN ─── */
 function Curtain({ isVisible, direction = "down" }) {
   return (
@@ -2671,6 +2874,7 @@ function ContactForm() {
 
 
 export default function Portfolio() {
+  const isMobile = useIsMobile();
   const [activeProject, setActiveProject] = useState(null);
   const [showCurtain, setShowCurtain] = useState(false);
   const [curtainDir, setCurtainDir] = useState("down");
@@ -2716,6 +2920,7 @@ export default function Portfolio() {
 
   if (activeProject) return (
     <>
+      <ResponsiveGlobalStyles />
       <Curtain isVisible={showCurtain} direction={curtainDir} />
       <PageWrapper key={activeProject}>{projectPages[activeProject]}</PageWrapper>
     </>
@@ -2723,6 +2928,7 @@ export default function Portfolio() {
 
   return (
     <>
+    <ResponsiveGlobalStyles />
     <Curtain isVisible={showCurtain} direction={curtainDir} />
     <div style={{ background: "#030303", color: "#f5f5f7", fontFamily: "'SF Pro Display',-apple-system,BlinkMacSystemFont,sans-serif", minHeight: "100vh", overflowX: "hidden", cursor: "none" }}>
       <style>{`
@@ -2759,12 +2965,12 @@ export default function Portfolio() {
 
       {/* ── NAV ── */}
       <motion.header style={{ position: "fixed", top: 0, left: 0, right: 0, zIndex: 100, backdropFilter: "blur(32px)", WebkitBackdropFilter: "blur(32px)", borderBottom: "1px solid rgba(255,255,255,0.055)", background: navBg }}>
-        <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 48px", height: 62, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+        <div style={{ maxWidth: 1200, margin: "0 auto", padding: isMobile ? "0 18px" : "0 48px", height: 62, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12 }}>
           <motion.span whileHover={{ letterSpacing: "0.34em" }} transition={{ duration: 0.3 }}
             style={{ fontSize: 14, fontWeight: 700, letterSpacing: "0.26em", color: "#fff", textTransform: "uppercase", cursor: "none" }}>
             JH
           </motion.span>
-          <nav style={{ display: "flex", gap: 2 }}>
+          <nav style={{ display: isMobile ? "none" : "flex", gap: 2 }}>
             {["About", "Skills", "Projects", "Contact"].map(item => (
               <motion.a key={item} href={`#${item.toLowerCase()}`} whileHover={{ color: "#fff" }}
                 onMouseEnter={e => e.currentTarget.style.background = "rgba(255,255,255,0.06)"}
@@ -2774,14 +2980,14 @@ export default function Portfolio() {
               </motion.a>
             ))}
           </nav>
-          <div style={{ display:"flex", gap:8, alignItems:"center" }}>
+          <div style={{ display:"flex", gap:isMobile ? 6 : 8, alignItems:"center" }}>
             <Magnetic href="/cv.pdf" target="_blank"
-              style={{ fontSize:11, fontWeight:600, letterSpacing:"0.1em", border:"1px solid rgba(255,255,255,0.12)", background:"rgba(255,255,255,0.04)", color:"rgba(255,255,255,0.65)", padding:"11px 20px", borderRadius:999, gap:7, backdropFilter:"blur(12px)" }}>
+              style={{ fontSize:11, fontWeight:600, letterSpacing:"0.1em", border:"1px solid rgba(255,255,255,0.12)", background:"rgba(255,255,255,0.04)", color:"rgba(255,255,255,0.65)", padding:isMobile ? "10px 13px" : "11px 20px", borderRadius:999, gap:7, backdropFilter:"blur(12px)" }}>
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
               CV
             </Magnetic>
             <Magnetic href="#contact"
-              style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.1em", background: "#f5f5f7", color: "#000", padding: "11px 26px", borderRadius: 999, gap: 0 }}>
+              style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.1em", background: "#f5f5f7", color: "#000", padding: isMobile ? "10px 16px" : "11px 26px", borderRadius: 999, gap: 0 }}>
               Contact
             </Magnetic>
           </div>
@@ -2800,7 +3006,7 @@ export default function Portfolio() {
           <span style={{ fontSize: 11, fontWeight: 600, letterSpacing: "0.2em", textTransform: "uppercase", color: "rgba(255,255,255,0.52)" }}>Selected projects · Built with care and clarity</span>
         </motion.div>
 
-        <h1 style={{ fontSize: "clamp(64px, 10vw, 140px)", fontWeight: 700, lineHeight: 0.88, letterSpacing: "-0.055em", color: "#fff", marginBottom: 36, maxWidth: 1100 }}>
+        <h1 style={{ fontSize: isMobile ? "clamp(46px, 18vw, 76px)" : "clamp(64px, 10vw, 140px)", fontWeight: 700, lineHeight: 0.9, letterSpacing: "-0.055em", color: "#fff", marginBottom: 36, maxWidth: 1100 }}>
           <Split text="Software" delay={0.2} />
           <span style={{ display: "block", overflow: "hidden" }}>
             <motion.span initial={{ y: "110%" }} animate={{ y: 0 }} transition={{ delay: 0.56, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
@@ -2863,14 +3069,14 @@ export default function Portfolio() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-            style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 24, padding: "20px 26px", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 22, background: "rgba(255,255,255,0.025)", backdropFilter: "blur(18px)", marginBottom: 18 }}
+            style={{ display: "flex", alignItems: isMobile ? "flex-start" : "center", justifyContent: "space-between", gap: isMobile ? 16 : 24, padding: isMobile ? "22px 20px" : "20px 26px", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 22, background: "rgba(255,255,255,0.025)", backdropFilter: "blur(18px)", marginBottom: 18, flexDirection: isMobile ? "column" : "row" }}
           >
             <div>
               <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: "0.24em", textTransform: "uppercase", color: "rgba(255,255,255,0.28)", marginBottom: 6 }}>What I build</div>
               <div style={{ fontSize: "clamp(16px, 2vw, 22px)", fontWeight: 650, letterSpacing: "-0.035em", color: "#fff" }}>Full-stack systems · Backend logic · Database-driven applications</div>
             </div>
             <Magnetic href="#projects"
-              style={{ flexShrink: 0, fontSize: 11, fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase", background: "#f5f5f7", color: "#000", padding: "13px 24px", borderRadius: 999 }}>
+              style={{ flexShrink: 0, fontSize: 11, fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase", background: "#f5f5f7", color: "#000", padding: "13px 24px", borderRadius: 999, width:isMobile ? "100%" : "auto" }}>
               Explore work
             </Magnetic>
           </motion.div>
@@ -2932,20 +3138,20 @@ export default function Portfolio() {
       <section id="projects" style={{ position:"relative", zIndex:1, padding:"0 48px 150px" }}>
         <div style={{ maxWidth:1200, margin:"0 auto" }}>
           <motion.div initial={{ opacity:0 }} whileInView={{ opacity:1 }} viewport={{ once:true }}
-            style={{ marginBottom:60, display:"flex", alignItems:"flex-end", justifyContent:"space-between" }}>
+            style={{ marginBottom:isMobile ? 34 : 60, display:"flex", alignItems:isMobile ? "flex-start" : "flex-end", justifyContent:"space-between", flexDirection:isMobile ? "column" : "row", gap:isMobile ? 12 : 0 }}>
             <div>
               <div style={{ fontSize:11, fontWeight:600, letterSpacing:"0.24em", textTransform:"uppercase", color:"rgba(255,255,255,0.25)", marginBottom:18 }}>Projects</div>
               <h2 style={{ fontSize:"clamp(32px,4vw,54px)", fontWeight:700, letterSpacing:"-0.045em", color:"#fff" }}>Selected work</h2>
             </div>
-            <span style={{ fontSize:12, color:"rgba(255,255,255,0.2)", letterSpacing:"0.08em" }}>2023 — 2026</span>
+            <span style={{ fontSize:12, color:"rgba(255,255,255,0.28)", letterSpacing:"0.08em" }}>2023 — 2026</span>
           </motion.div>
           <div style={{ display:"flex", flexDirection:"column", gap:3 }}>
             {projects.map((pr,i)=>(
               <motion.div key={pr.title}
                 initial={{ opacity:0, y:22 }} whileInView={{ opacity:1, y:0 }} viewport={{ once:true }} transition={{ delay:i*0.1, duration:0.8, ease:[0.16,1,0.3,1] }}
-                whileHover={{ paddingLeft:58, background:pr.color, borderColor:"rgba(255,255,255,0.14)" }}
+                whileHover={isMobile ? {} : { paddingLeft:58, background:pr.color, borderColor:"rgba(255,255,255,0.14)" }}
                 onClick={() => { const id = PROJECT_MAP[pr.num]; if (id) openProject(id); else window.open(pr.url, "_blank"); }}
-                style={{ display:"grid", gridTemplateColumns:"88px 1fr auto", alignItems:"center", gap:36, padding:"32px 40px", border:"1px solid rgba(255,255,255,0.07)", background:"rgba(255,255,255,0.018)", borderRadius:18, cursor:"none", transition:"all 0.4s cubic-bezier(0.16,1,0.3,1)", position:"relative", overflow:"hidden" }}>
+                style={{ display:"grid", gridTemplateColumns:isMobile ? "1fr" : "88px 1fr auto", alignItems:isMobile ? "start" : "center", gap:isMobile ? 18 : 36, padding:isMobile ? "24px 22px" : "32px 40px", border:"1px solid rgba(255,255,255,0.07)", background:isMobile ? "rgba(255,255,255,0.028)" : "rgba(255,255,255,0.018)", borderRadius:isMobile ? 22 : 18, cursor:"pointer", transition:"all 0.4s cubic-bezier(0.16,1,0.3,1)", position:"relative", overflow:"hidden" }}>
                 {/* color accent */}
                 <motion.div
                   initial={{ scaleX: 0 }}
@@ -2953,17 +3159,20 @@ export default function Portfolio() {
                   transition={{ duration: 0.3, ease: [0.16,1,0.3,1] }}
                   style={{ position:"absolute", left:0, top:0, bottom:0, width:3, background:pr.color.replace('0.1','0.8').replace('0.12','0.8').replace('0.11','0.8').replace('0.09','0.8').replace('0.13','0.8'), borderRadius:"18px 0 0 18px", transformOrigin:"left", pointerEvents:"none" }}
                 />
-                <span style={{ fontSize:12, fontWeight:700, letterSpacing:"0.18em", color:"rgba(255,255,255,0.18)" }}>{pr.num}</span>
+                <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", gap:12 }}>
+                  <span style={{ fontSize:12, fontWeight:700, letterSpacing:"0.18em", color:"rgba(255,255,255,0.28)" }}>{pr.num}</span>
+                  {isMobile && <span style={{ fontSize:12, color:"rgba(255,255,255,0.26)", letterSpacing:"0.08em" }}>{pr.year}</span>}
+                </div>
                 <div>
-                  <h3 style={{ fontSize:23, fontWeight:700, letterSpacing:"-0.035em", color:"#fff", marginBottom:11 }}>{pr.title}</h3>
-                  <p style={{ fontSize:14, color:"rgba(255,255,255,0.35)", lineHeight:1.75, marginBottom:18 }}>{pr.desc}</p>
+                  <h3 style={{ fontSize:isMobile ? 22 : 23, fontWeight:700, letterSpacing:"-0.035em", lineHeight:1.12, color:"#fff", marginBottom:11 }}>{pr.title}</h3>
+                  <p style={{ fontSize:isMobile ? 13.5 : 14, color:isMobile ? "rgba(255,255,255,0.48)" : "rgba(255,255,255,0.35)", lineHeight:1.75, marginBottom:18 }}>{pr.desc}</p>
                   <div style={{ display:"flex", gap:8, flexWrap:"wrap" }}>
                     {pr.tags.map(tag=>(
-                      <span key={tag} style={{ fontSize:11, fontWeight:600, letterSpacing:"0.1em", color:"rgba(255,255,255,0.27)", border:"1px solid rgba(255,255,255,0.09)", borderRadius:999, padding:"4px 13px" }}>{tag}</span>
+                      <span key={tag} style={{ fontSize:10.5, fontWeight:600, letterSpacing:"0.09em", color:isMobile ? "rgba(255,255,255,0.42)" : "rgba(255,255,255,0.27)", border:"1px solid rgba(255,255,255,0.09)", borderRadius:999, padding:isMobile ? "5px 11px" : "4px 13px" }}>{tag}</span>
                     ))}
                   </div>
                 </div>
-                <div style={{ display:"flex", flexDirection:"column", alignItems:"flex-end", gap:14 }}>
+                <div style={{ display:isMobile ? "none" : "flex", flexDirection:"column", alignItems:"flex-end", gap:14 }}>
                   <span style={{ fontSize:12, color:"rgba(255,255,255,0.2)" }}>{pr.year}</span>
                   <motion.div whileHover={{ scale:1.12, rotate:45 }} style={{ width:42, height:42, borderRadius:"50%", border:"1px solid rgba(255,255,255,0.13)", display:"flex", alignItems:"center", justifyContent:"center", color:"rgba(255,255,255,0.4)" }}>
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M7 17L17 7M7 7h10v10"/></svg>

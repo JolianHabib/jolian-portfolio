@@ -1,7 +1,24 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { motion, useScroll, useTransform, useSpring, useMotionValue } from "framer-motion";
 
+
+/* ─── RESPONSIVE HELPER ─── */
+function useIsMobile() {
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth <= 768);
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  }, []);
+
+  return isMobile;
+}
+
+
 function Cursor() {
+  const isMobile = useIsMobile();
   const cx = useMotionValue(-100), cy = useMotionValue(-100);
   const dx = useMotionValue(-100), dy = useMotionValue(-100);
   const sx = useSpring(cx, { damping:26, stiffness:280 });
@@ -11,6 +28,8 @@ function Cursor() {
     window.addEventListener("mousemove", mv);
     return () => window.removeEventListener("mousemove", mv);
   }, []);
+  if (isMobile) return null;
+
   return (
     <>
       <motion.div style={{ x:sx, y:sy, position:"fixed", top:0, left:0, width:40, height:40, borderRadius:"50%", border:"1px solid rgba(255,255,255,0.35)", pointerEvents:"none", zIndex:9999, mixBlendMode:"difference" }} />
@@ -31,7 +50,7 @@ function MagneticLink({ children, href, target, style }) {
   };
   return (
     <motion.a ref={ref} href={href} target={target} onMouseMove={onMove} onMouseLeave={() => { x.set(0); y.set(0); }}
-      style={{ ...style, x:sx, y:sy, display:"inline-flex", alignItems:"center", justifyContent:"center", textDecoration:"none", cursor:"none" }}>
+      style={{ ...style, x:sx, y:sy, display:"inline-flex", alignItems:"center", justifyContent:"center", textDecoration:"none", cursor:"pointer" }}>
       {children}
     </motion.a>
   );
@@ -59,10 +78,12 @@ function Arrow() {
 }
 
 function FeatureCard({ icon, title, desc, delay }) {
+  const isMobile = useIsMobile();
+
   return (
     <motion.div initial={{ opacity:0, y:20 }} whileInView={{ opacity:1, y:0 }} viewport={{ once:true }} transition={{ delay, duration:0.7, ease:[0.16,1,0.3,1] }}
       whileHover={{ background:"rgba(255,255,255,0.042)", borderColor:"rgba(255,255,255,0.13)", y:-4 }}
-      style={{ padding:"32px 28px", border:"1px solid rgba(255,255,255,0.08)", background:"rgba(255,255,255,0.016)", borderRadius:20, transition:"all 0.3s", cursor:"none" }}>
+      style={{ padding:isMobile ? "26px 22px" : "32px 28px", border:"1px solid rgba(255,255,255,0.08)", background:"rgba(255,255,255,0.016)", borderRadius:20, transition:"all 0.3s", cursor:"default" }}>
       <div style={{ fontSize:28, marginBottom:16 }}>{icon}</div>
       <h3 style={{ fontSize:16, fontWeight:600, color:"#fff", letterSpacing:"-0.02em", marginBottom:8 }}>{title}</h3>
       <p style={{ fontSize:13, color:"rgba(255,255,255,0.38)", lineHeight:1.75 }}>{desc}</p>
@@ -91,6 +112,8 @@ function Pill({ label }) {
 
 /* ─── PREVIEW CARD ─── */
 function PreviewCard({ src, title, desc, delay }) {
+  const isMobile = useIsMobile();
+
   return (
     <motion.div
       initial={{ opacity:0, y:24 }}
@@ -100,7 +123,7 @@ function PreviewCard({ src, title, desc, delay }) {
       whileHover={{ y:-6, borderColor:"rgba(225,29,72,0.24)", background:"rgba(255,255,255,0.035)" }}
       style={{ border:"1px solid rgba(255,255,255,0.08)", background:"rgba(255,255,255,0.018)", borderRadius:24, overflow:"hidden", transition:"all 0.35s", boxShadow:"0 24px 80px rgba(0,0,0,0.35)" }}>
       <div style={{ padding:10, borderBottom:"1px solid rgba(255,255,255,0.06)", background:"rgba(255,255,255,0.025)" }}>
-        <div style={{ height:360, borderRadius:16, overflow:"hidden", background:"rgba(255,255,255,0.035)", border:"1px solid rgba(255,255,255,0.06)" }}>
+        <div style={{ height:isMobile ? 230 : 360, borderRadius:16, overflow:"hidden", background:"rgba(255,255,255,0.035)", border:"1px solid rgba(255,255,255,0.06)" }}>
           <img
             src={src}
             alt={title}
@@ -119,6 +142,7 @@ function PreviewCard({ src, title, desc, delay }) {
 const COLOR = "#e11d48";
 
 export default function ProjectGameFactory({ onBack }) {
+  const isMobile = useIsMobile();
   const { scrollY } = useScroll();
   const { scrollYProgress } = useScroll();
   const navBg = useTransform(scrollY, [0, 80], ["rgba(0,0,0,0)", "rgba(4,4,4,0.92)"]);
@@ -140,8 +164,8 @@ export default function ProjectGameFactory({ onBack }) {
   ];
 
   return (
-    <div style={{ background:"#030303", color:"#f5f5f7", fontFamily:"'SF Pro Display',-apple-system,BlinkMacSystemFont,sans-serif", minHeight:"100vh", overflowX:"hidden", cursor:"none" }}>
-      <style>{`*{box-sizing:border-box;margin:0;padding:0}html{scroll-behavior:smooth}::-webkit-scrollbar{width:3px}::-webkit-scrollbar-track{background:#000}::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.1);border-radius:2px}a{text-decoration:none;color:inherit}`}</style>
+    <div style={{ background:"#030303", color:"#f5f5f7", fontFamily:"'SF Pro Display',-apple-system,BlinkMacSystemFont,sans-serif", minHeight:"100vh", overflowX:"hidden", cursor:"default" }}>
+      <style>{`*{box-sizing:border-box;margin:0;padding:0}html{scroll-behavior:smooth}::-webkit-scrollbar{width:3px}::-webkit-scrollbar-track{background:#000}::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.1);border-radius:2px}a{text-decoration:none;color:inherit}@media(max-width:768px){body{overflow-x:hidden}h1,h2,p{max-width:100% !important}}`}</style>
 
       <Cursor />
       <motion.div style={{ position:"fixed", top:0, left:0, height:"1px", background:"rgba(225,29,72,0.6)", zIndex:200, width:barWidth }} />
@@ -156,23 +180,23 @@ export default function ProjectGameFactory({ onBack }) {
 
       {/* NAV */}
       <motion.header style={{ position:"fixed", top:0, left:0, right:0, zIndex:100, backdropFilter:"blur(32px)", WebkitBackdropFilter:"blur(32px)", borderBottom:"1px solid rgba(255,255,255,0.055)", background:navBg }}>
-        <div style={{ maxWidth:1200, margin:"0 auto", padding:"0 48px", height:62, display:"flex", alignItems:"center", justifyContent:"space-between" }}>
+        <div style={{ maxWidth:1200, margin:"0 auto", padding:isMobile ? "0 18px" : "0 48px", height:62, display:"flex", alignItems:"center", justifyContent:"space-between", gap:12 }}>
           <motion.button onClick={onBack} whileHover={{ x:-3 }}
-            style={{ display:"flex", alignItems:"center", gap:8, fontSize:12, fontWeight:600, letterSpacing:"0.1em", textTransform:"uppercase", color:"rgba(255,255,255,0.4)", background:"none", border:"none", cursor:"none" }}
+            style={{ display:"flex", alignItems:"center", gap:8, fontSize:12, fontWeight:600, letterSpacing:"0.1em", textTransform:"uppercase", color:"rgba(255,255,255,0.4)", background:"none", border:"none", cursor:"default" }}
             onMouseEnter={e=>e.currentTarget.style.color="#fff"} onMouseLeave={e=>e.currentTarget.style.color="rgba(255,255,255,0.4)"}>
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
             Back
           </motion.button>
           <span style={{ fontSize:13, fontWeight:700, letterSpacing:"0.22em", color:"rgba(255,255,255,0.22)", textTransform:"uppercase" }}>JH</span>
           <MagneticLink href="https://github.com/JolianHabib/GameFactory-C-Project" target="_blank"
-            style={{ fontSize:11, fontWeight:700, letterSpacing:"0.1em", background:"rgba(225,29,72,0.12)", color:COLOR, padding:"10px 22px", borderRadius:999, border:"1px solid rgba(225,29,72,0.25)" }}>
+            style={{ fontSize:isMobile ? 10 : 11, fontWeight:700, letterSpacing:"0.1em", background:"rgba(225,29,72,0.12)", color:COLOR, padding:isMobile ? "9px 13px" : "10px 22px", borderRadius:999, border:"1px solid rgba(225,29,72,0.25)", whiteSpace:"nowrap" }}>
             GitHub ↗
           </MagneticLink>
         </div>
       </motion.header>
 
       {/* HERO */}
-      <motion.section style={{ position:"relative", zIndex:1, minHeight:"100vh", display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", padding:"130px 48px 90px", textAlign:"center" }}>
+      <motion.section style={{ position:"relative", zIndex:1, minHeight:"100vh", display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", padding:isMobile ? "110px 20px 70px" : "130px 48px 90px", textAlign:"center" }}>
         <motion.div style={{ y:heroY }}>
           <motion.div initial={{ opacity:0, y:-14 }} animate={{ opacity:1, y:0 }} transition={{ delay:0.1, duration:0.7 }}
             style={{ display:"inline-flex", alignItems:"center", gap:9, border:"1px solid rgba(225,29,72,0.2)", borderRadius:999, padding:"7px 20px", marginBottom:48, background:"rgba(225,29,72,0.06)", backdropFilter:"blur(16px)" }}>
@@ -185,7 +209,7 @@ export default function ProjectGameFactory({ onBack }) {
           </motion.div>
 
           <motion.h1 initial={{ opacity:0, y:24 }} animate={{ opacity:1, y:0 }} transition={{ delay:0.2, duration:0.8, ease:[0.16,1,0.3,1] }}
-            style={{ fontSize:"clamp(46px,8vw,110px)", fontWeight:700, lineHeight:0.9, letterSpacing:"-0.055em", color:"#fff", marginBottom:32, maxWidth:1000 }}>
+            style={{ fontSize:isMobile ? "clamp(42px,16vw,70px)" : "clamp(46px,8vw,110px)", fontWeight:700, lineHeight:0.9, letterSpacing:"-0.055em", color:"#fff", marginBottom:32, maxWidth:1000 }}>
             Game
             <span style={{ display:"block", background:`linear-gradient(135deg,${COLOR},rgba(225,29,72,0.3))`, WebkitBackgroundClip:"text", WebkitTextFillColor:"transparent", backgroundClip:"text" }}>
               Factory
@@ -204,7 +228,7 @@ export default function ProjectGameFactory({ onBack }) {
 
           <motion.div initial={{ opacity:0, y:14 }} animate={{ opacity:1, y:0 }} transition={{ delay:0.8, duration:0.7 }}>
             <MagneticLink href="https://github.com/JolianHabib/GameFactory-C-Project" target="_blank"
-              style={{ gap:9, background:COLOR, color:"#fff", fontSize:14, fontWeight:700, padding:"16px 36px", borderRadius:999, boxShadow:"0 0 60px rgba(225,29,72,0.25)" }}>
+              style={{ gap:9, background:COLOR, color:"#fff", fontSize:14, fontWeight:700, padding:isMobile ? "15px 28px" : "16px 36px", borderRadius:999, boxShadow:"0 0 60px rgba(225,29,72,0.25)", width:isMobile ? "100%" : "auto", maxWidth:isMobile ? 280 : "none" }}>
               View on GitHub
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 00-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0020 4.77 5.07 5.07 0 0019.91 1S18.73.65 16 2.48a13.38 13.38 0 00-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 005 4.77a5.44 5.44 0 00-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 009 18.13V22"/></svg>
             </MagneticLink>
@@ -221,7 +245,7 @@ export default function ProjectGameFactory({ onBack }) {
 
 
       {/* PRODUCT PREVIEW */}
-      <section style={{ position:"relative", zIndex:1, padding:"0 48px 120px" }}>
+      <section style={{ position:"relative", zIndex:1, padding:isMobile ? "0 20px 80px" : "0 48px 120px" }}>
         <div style={{ maxWidth:1200, margin:"0 auto" }}>
           <motion.div initial={{ opacity:0 }} whileInView={{ opacity:1 }} viewport={{ once:true }} style={{ marginBottom:60, textAlign:"center" }}>
             <div style={{ fontSize:11, fontWeight:600, letterSpacing:"0.24em", textTransform:"uppercase", color:"rgba(225,29,72,0.65)", marginBottom:18 }}>
@@ -235,7 +259,7 @@ export default function ProjectGameFactory({ onBack }) {
             </p>
           </motion.div>
 
-          <div style={{ display:"grid", gridTemplateColumns:"repeat(2,1fr)", gap:18 }}>
+          <div style={{ display:"grid", gridTemplateColumns:isMobile ? "1fr" : "repeat(2,1fr)", gap:18 }}>
             {previewImages.map((item,i) => <PreviewCard key={item.title} {...item} delay={i*0.1} />)}
           </div>
         </div>
@@ -243,8 +267,8 @@ export default function ProjectGameFactory({ onBack }) {
 
       {/* STATS */}
       <section style={{ position:"relative", zIndex:1, borderTop:"1px solid rgba(255,255,255,0.05)", borderBottom:"1px solid rgba(255,255,255,0.05)" }}>
-        <div style={{ maxWidth:1200, margin:"0 auto", padding:"0 48px" }}>
-          <div style={{ display:"grid", gridTemplateColumns:"repeat(4,1fr)" }}>
+        <div style={{ maxWidth:1200, margin:"0 auto", padding:isMobile ? "0 20px" : "0 48px" }}>
+          <div style={{ display:"grid", gridTemplateColumns:isMobile ? "repeat(2,1fr)" : "repeat(4,1fr)" }}>
             {[{val:"6",label:"Modules"},{val:"Linked",label:"Lists"},{val:"File",label:"Persistence"},{val:"C",label:"Language"}].map((s,i)=>(
               <div key={i} style={{ borderRight:i<3?"1px solid rgba(255,255,255,0.05)":"none" }}>
                 <Stat val={s.val} label={s.label} delay={i*0.08} />
@@ -255,27 +279,27 @@ export default function ProjectGameFactory({ onBack }) {
       </section>
 
       {/* FEATURES */}
-      <section style={{ position:"relative", zIndex:1, padding:"120px 48px" }}>
+      <section style={{ position:"relative", zIndex:1, padding:isMobile ? "80px 20px" : "120px 48px" }}>
         <div style={{ maxWidth:1200, margin:"0 auto" }}>
           <motion.div initial={{ opacity:0 }} whileInView={{ opacity:1 }} viewport={{ once:true }} style={{ marginBottom:60 }}>
             <div style={{ fontSize:11, fontWeight:600, letterSpacing:"0.24em", textTransform:"uppercase", color:"rgba(255,255,255,0.22)", marginBottom:18 }}>Features</div>
             <h2 style={{ fontSize:"clamp(30px,4vw,52px)", fontWeight:700, letterSpacing:"-0.045em", color:"#fff" }}>What it does</h2>
           </motion.div>
-          <div style={{ display:"grid", gridTemplateColumns:"repeat(3,1fr)", gap:16 }}>
+          <div style={{ display:"grid", gridTemplateColumns:isMobile ? "1fr" : "repeat(3,1fr)", gap:16 }}>
             {features.map((f,i) => <FeatureCard key={f.title} {...f} delay={i*0.08} />)}
           </div>
         </div>
       </section>
 
       {/* ARCHITECTURE */}
-      <section style={{ position:"relative", zIndex:1, padding:"0 48px 120px" }}>
+      <section style={{ position:"relative", zIndex:1, padding:isMobile ? "0 20px 80px" : "0 48px 120px" }}>
         <div style={{ maxWidth:1200, margin:"0 auto" }}>
           <motion.div initial={{ opacity:0 }} whileInView={{ opacity:1 }} viewport={{ once:true }} style={{ marginBottom:60 }}>
             <div style={{ fontSize:11, fontWeight:600, letterSpacing:"0.24em", textTransform:"uppercase", color:"rgba(255,255,255,0.22)", marginBottom:18 }}>Architecture</div>
             <h2 style={{ fontSize:"clamp(30px,4vw,52px)", fontWeight:700, letterSpacing:"-0.045em", color:"#fff" }}>How it's built</h2>
           </motion.div>
           <motion.div initial={{ opacity:0, y:24 }} whileInView={{ opacity:1, y:0 }} viewport={{ once:true }} transition={{ duration:0.8 }}
-            style={{ padding:"52px", border:"1px solid rgba(255,255,255,0.07)", borderRadius:28, background:"rgba(255,255,255,0.018)", backdropFilter:"blur(20px)" }}>
+            style={{ padding:isMobile ? "26px 18px" : "52px", border:"1px solid rgba(255,255,255,0.07)", borderRadius:28, background:"rgba(255,255,255,0.018)", backdropFilter:"blur(20px)" }}>
 
             {/* Main menu */}
             <div style={{ display:"flex", justifyContent:"center" }}>
@@ -284,7 +308,7 @@ export default function ProjectGameFactory({ onBack }) {
             <div style={{ display:"flex", justifyContent:"center" }}><Arrow /></div>
 
             {/* 3 top modules */}
-            <div style={{ display:"flex", justifyContent:"center", gap:20, flexWrap:"wrap" }}>
+            <div style={{ display:"flex", justifyContent:"center", gap:isMobile ? 12 : 20, flexWrap:"wrap" }}>
               <ArchNode label="Factory" sub="Depts & machines" color="#3b82f6" delay={0.2} />
               <ArchNode label="Workers" sub="Staff management" color="#3b82f6" delay={0.25} />
               <ArchNode label="Games" sub="Product catalog" color="#3b82f6" delay={0.3} />
@@ -292,19 +316,19 @@ export default function ProjectGameFactory({ onBack }) {
             <div style={{ display:"flex", justifyContent:"center" }}><Arrow /></div>
 
             {/* Orders */}
-            <div style={{ display:"flex", justifyContent:"center", gap:20 }}>
+            <div style={{ display:"flex", justifyContent:"center", gap:isMobile ? 12 : 20, flexWrap:"wrap" }}>
               <ArchNode label="Customers" sub="Profiles & history" color="#f59e0b" delay={0.35} />
               <ArchNode label="Orders" sub="Linked to games" color="#f59e0b" delay={0.4} />
             </div>
             <div style={{ display:"flex", justifyContent:"center" }}><Arrow /></div>
 
             {/* Data layer */}
-            <div style={{ display:"flex", justifyContent:"center", gap:20 }}>
+            <div style={{ display:"flex", justifyContent:"center", gap:isMobile ? 12 : 20, flexWrap:"wrap" }}>
               <ArchNode label="Linked Lists" sub="Dynamic C structs" color="#10b981" delay={0.45} />
               <ArchNode label="Binary Files" sub="Read / write persist" color="#10b981" delay={0.5} />
             </div>
 
-            <div style={{ display:"flex", justifyContent:"center", gap:24, marginTop:36, paddingTop:28, borderTop:"1px solid rgba(255,255,255,0.06)", flexWrap:"wrap" }}>
+            <div style={{ display:"flex", justifyContent:"center", gap:isMobile ? 12 : 24, marginTop:36, paddingTop:28, borderTop:"1px solid rgba(255,255,255,0.06)", flexWrap:"wrap" }}>
               {[["#e11d48","Entry Point"],["#3b82f6","Core Modules"],["#f59e0b","Business Layer"],["#10b981","Data Layer"]].map(([c,l])=>(
                 <div key={l} style={{ display:"flex", alignItems:"center", gap:7 }}>
                   <div style={{ width:8, height:8, borderRadius:"50%", background:c }} />
@@ -317,7 +341,7 @@ export default function ProjectGameFactory({ onBack }) {
       </section>
 
       {/* HOW TO USE */}
-      <section style={{ position:"relative", zIndex:1, padding:"0 48px 120px" }}>
+      <section style={{ position:"relative", zIndex:1, padding:isMobile ? "0 20px 80px" : "0 48px 120px" }}>
         <div style={{ maxWidth:1200, margin:"0 auto" }}>
           <motion.div initial={{ opacity:0 }} whileInView={{ opacity:1 }} viewport={{ once:true }} style={{ marginBottom:60 }}>
             <div style={{ fontSize:11, fontWeight:600, letterSpacing:"0.24em", textTransform:"uppercase", color:"rgba(255,255,255,0.22)", marginBottom:18 }}>Usage</div>
@@ -335,7 +359,7 @@ export default function ProjectGameFactory({ onBack }) {
                 initial={{ opacity:0, x:-16 }} whileInView={{ opacity:1, x:0 }} viewport={{ once:true }}
                 transition={{ delay:i*0.08, duration:0.7, ease:[0.16,1,0.3,1] }}
                 whileHover={{ background:"rgba(225,29,72,0.05)", borderColor:"rgba(225,29,72,0.2)", paddingLeft:52 }}
-                style={{ display:"grid", gridTemplateColumns:"72px 1fr", gap:32, padding:"28px 40px", border:"1px solid rgba(255,255,255,0.07)", background:"rgba(255,255,255,0.018)", borderRadius:16, cursor:"none", transition:"all 0.35s cubic-bezier(0.16,1,0.3,1)" }}>
+                style={{ display:"grid", gridTemplateColumns:isMobile ? "1fr" : "72px 1fr", gap:isMobile ? 10 : 32, padding:isMobile ? "22px 20px" : "28px 40px", border:"1px solid rgba(255,255,255,0.07)", background:"rgba(255,255,255,0.018)", borderRadius:16, cursor:"default", transition:"all 0.35s cubic-bezier(0.16,1,0.3,1)" }}>
                 <span style={{ fontSize:11, fontWeight:700, letterSpacing:"0.18em", color:"rgba(225,29,72,0.5)", alignSelf:"center" }}>{step.num}</span>
                 <div>
                   <h3 style={{ fontSize:17, fontWeight:600, color:"#fff", letterSpacing:"-0.025em", marginBottom:7 }}>{step.title}</h3>
@@ -348,10 +372,10 @@ export default function ProjectGameFactory({ onBack }) {
       </section>
 
       {/* CTA */}
-      <section style={{ position:"relative", zIndex:1, padding:"0 48px 90px" }}>
+      <section style={{ position:"relative", zIndex:1, padding:isMobile ? "0 20px 70px" : "0 48px 90px" }}>
         <div style={{ maxWidth:1200, margin:"0 auto" }}>
           <motion.div initial={{ opacity:0, y:40 }} whileInView={{ opacity:1, y:0 }} viewport={{ once:true }} transition={{ duration:1 }}
-            style={{ position:"relative", padding:"80px", border:"1px solid rgba(225,29,72,0.12)", borderRadius:32, background:"rgba(225,29,72,0.03)", textAlign:"center", overflow:"hidden" }}>
+            style={{ position:"relative", padding:isMobile ? "44px 22px" : "80px", border:"1px solid rgba(225,29,72,0.12)", borderRadius:32, background:"rgba(225,29,72,0.03)", textAlign:"center", overflow:"hidden" }}>
             <div style={{ position:"absolute", top:-200, left:"50%", transform:"translateX(-50%)", width:600, height:400, background:"radial-gradient(circle,rgba(225,29,72,0.08) 0%,transparent 70%)", pointerEvents:"none" }} />
             <motion.div animate={{ rotate:360 }} transition={{ duration:60, repeat:Infinity, ease:"linear" }}
               style={{ position:"absolute", top:"50%", left:"50%", transform:"translate(-50%,-50%)", width:500, height:500, border:"1px solid rgba(225,29,72,0.06)", borderRadius:"50%", pointerEvents:"none" }} />
@@ -360,7 +384,7 @@ export default function ProjectGameFactory({ onBack }) {
               <h2 style={{ fontSize:"clamp(32px,4.5vw,60px)", fontWeight:700, letterSpacing:"-0.05em", color:"#fff", marginBottom:18 }}>Full project on GitHub.</h2>
               <p style={{ fontSize:15, color:"rgba(255,255,255,0.3)", marginBottom:44, lineHeight:1.7 }}>Built by Jolian Habib · Afeka College 2023</p>
               <MagneticLink href="https://github.com/JolianHabib/GameFactory-C-Project" target="_blank"
-                style={{ gap:10, background:COLOR, color:"#fff", fontSize:15, fontWeight:700, padding:"18px 44px", borderRadius:999, boxShadow:"0 0 80px rgba(225,29,72,0.15)" }}>
+                style={{ gap:10, background:COLOR, color:"#fff", fontSize:15, fontWeight:700, padding:isMobile ? "16px 28px" : "18px 44px", borderRadius:999, boxShadow:"0 0 80px rgba(225,29,72,0.15)", width:isMobile ? "100%" : "auto", maxWidth:isMobile ? 280 : "none" }}>
                 View on GitHub
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 00-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0020 4.77 5.07 5.07 0 0019.91 1S18.73.65 16 2.48a13.38 13.38 0 00-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 005 4.77a5.44 5.44 0 00-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 009 18.13V22"/></svg>
               </MagneticLink>
@@ -370,9 +394,9 @@ export default function ProjectGameFactory({ onBack }) {
       </section>
 
       {/* FOOTER */}
-      <footer style={{ position:"relative", zIndex:1, borderTop:"1px solid rgba(255,255,255,0.045)", padding:"28px 48px", display:"flex", alignItems:"center", justifyContent:"space-between", maxWidth:1200, margin:"0 auto" }}>
+      <footer style={{ position:"relative", zIndex:1, borderTop:"1px solid rgba(255,255,255,0.045)", padding:isMobile ? "26px 20px" : "28px 48px", display:"flex", alignItems:"center", justifyContent:"space-between", maxWidth:1200, margin:"0 auto", flexDirection:isMobile ? "column" : "row", gap:isMobile ? 16 : 0 }}>
         <motion.button onClick={onBack} whileHover={{ x:-3 }}
-          style={{ display:"flex", alignItems:"center", gap:7, fontSize:11, fontWeight:600, letterSpacing:"0.12em", textTransform:"uppercase", color:"rgba(255,255,255,0.2)", background:"none", border:"none", cursor:"none" }}
+          style={{ display:"flex", alignItems:"center", gap:7, fontSize:11, fontWeight:600, letterSpacing:"0.12em", textTransform:"uppercase", color:"rgba(255,255,255,0.2)", background:"none", border:"none", cursor:"default" }}
           onMouseEnter={e=>e.currentTarget.style.color="#fff"} onMouseLeave={e=>e.currentTarget.style.color="rgba(255,255,255,0.2)"}>
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
           Back to Portfolio

@@ -1,6 +1,23 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
+
+
+/* ─── RESPONSIVE HELPER ─── */
+function useIsMobile() {
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth <= 768);
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  }, []);
+
+  return isMobile;
+}
+
 
 /* ─── SAFE BUTTON (NO CUSTOM HOOKS) ─── */
 function Magnetic({ children, href, target, style, onClick, onMouseEnter, onMouseLeave }) {
@@ -94,6 +111,8 @@ function Pill({ label }) {
 
 /* ─── PREVIEW CARD ─── */
 function PreviewCard({ src, title, desc, delay }) {
+  const isMobile = useIsMobile();
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }}
@@ -101,7 +120,7 @@ function PreviewCard({ src, title, desc, delay }) {
       whileHover={{ y: -6, borderColor: "rgba(16,185,129,0.22)", background: "rgba(255,255,255,0.035)" }}
       style={{ border: "1px solid rgba(255,255,255,0.08)", background: "rgba(255,255,255,0.018)", borderRadius: 24, overflow: "hidden", transition: "all 0.35s", boxShadow: "0 24px 80px rgba(0,0,0,0.35)" }}>
       <div style={{ padding: 10, borderBottom: "1px solid rgba(255,255,255,0.06)", background: "rgba(255,255,255,0.025)" }}>
-        <div style={{ height: 360, borderRadius: 16, overflow: "hidden", background: "rgba(255,255,255,0.035)", border: "1px solid rgba(255,255,255,0.06)" }}>
+        <div style={{ height: isMobile ? 230 : 360, borderRadius: 16, overflow: "hidden", background: "rgba(255,255,255,0.035)", border: "1px solid rgba(255,255,255,0.06)" }}>
           <img
             src={src}
             alt={title}
@@ -119,6 +138,8 @@ function PreviewCard({ src, title, desc, delay }) {
 
 /* ─── MAIN ─── */
 export default function ProjectAfeka({ onBack = () => {} }) {
+  const isMobile = useIsMobile();
+
   const features = [
     { icon: "🤖", title: "AI Trail Generation", desc: "Claude / GPT generates real multi-day routes based on location, trail type, and duration with realistic waypoints." },
     { icon: "🗺️", title: "Interactive Maps", desc: "Leaflet.js with GraphHopper routing API renders real road and path routes — not straight lines." },
@@ -136,7 +157,7 @@ export default function ProjectAfeka({ onBack = () => {} }) {
 
   return (
     <div style={{ background: "#030303", color: "#f5f5f7", fontFamily: "'SF Pro Display',-apple-system,BlinkMacSystemFont,sans-serif", minHeight: "100vh", overflowX: "hidden", cursor: "default" }}>
-      <style>{`*{box-sizing:border-box;margin:0;padding:0}html{scroll-behavior:smooth}::-webkit-scrollbar{width:3px}::-webkit-scrollbar-track{background:#000}::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.1);border-radius:2px}a{text-decoration:none;color:inherit}`}</style>
+      <style>{`*{box-sizing:border-box;margin:0;padding:0}html{scroll-behavior:smooth}::-webkit-scrollbar{width:3px}::-webkit-scrollbar-track{background:#000}::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.1);border-radius:2px}a{text-decoration:none;color:inherit}@media(max-width:768px){body{overflow-x:hidden} h1,h2,p{max-width:100% !important} }`}</style>
 
       {/* progress */}
       <motion.div style={{ position:"fixed", top:0, left:0, height:"1px", background:"rgba(16,185,129,0.6)", zIndex:200, width:"100%" }} />
@@ -152,7 +173,7 @@ export default function ProjectAfeka({ onBack = () => {} }) {
 
       {/* NAV */}
       <motion.header style={{ position:"fixed", top:0, left:0, right:0, zIndex:100, backdropFilter:"blur(32px)", WebkitBackdropFilter:"blur(32px)", borderBottom:"1px solid rgba(255,255,255,0.055)", background:"rgba(4,4,4,0.92)" }}>
-        <div style={{ maxWidth:1200, margin:"0 auto", padding:"0 48px", height:62, display:"flex", alignItems:"center", justifyContent:"space-between" }}>
+        <div style={{ maxWidth:1200, margin:"0 auto", padding: isMobile ? "0 18px" : "0 48px", height:62, display:"flex", alignItems:"center", justifyContent:"space-between", gap:12 }}>
           <motion.button onClick={onBack}
             whileHover={{ x: -3 }}
             style={{ display:"flex", alignItems:"center", gap:8, fontSize:12, fontWeight:600, letterSpacing:"0.1em", textTransform:"uppercase", color:"rgba(255,255,255,0.4)", background:"none", border:"none", cursor:"default", transition:"color 0.2s" }}
@@ -162,14 +183,14 @@ export default function ProjectAfeka({ onBack = () => {} }) {
           </motion.button>
           <span style={{ fontSize:13, fontWeight:700, letterSpacing:"0.22em", color:"rgba(255,255,255,0.22)", textTransform:"uppercase" }}>JH</span>
           <Magnetic href="https://afeka-trails-2026-three.vercel.app" target="_blank"
-            style={{ fontSize:11, fontWeight:700, letterSpacing:"0.1em", background:"rgba(16,185,129,0.15)", color:"#10b981", padding:"10px 22px", borderRadius:999, gap:0, border:"1px solid rgba(16,185,129,0.25)" }}>
+            style={{ fontSize:isMobile ? 10 : 11, fontWeight:700, letterSpacing:"0.1em", background:"rgba(16,185,129,0.15)", color:"#10b981", padding:isMobile ? "9px 13px" : "10px 22px", borderRadius:999, gap:0, border:"1px solid rgba(16,185,129,0.25)", whiteSpace:"nowrap" }}>
             Live Demo ↗
           </Magnetic>
         </div>
       </motion.header>
 
       {/* HERO */}
-      <motion.section style={{ position:"relative", zIndex:1, minHeight:"100vh", display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", padding:"130px 48px 90px", textAlign:"center" }}>
+      <motion.section style={{ position:"relative", zIndex:1, minHeight:"100vh", display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", padding:isMobile ? "110px 20px 70px" : "130px 48px 90px", textAlign:"center" }}>
         <motion.div>
           <motion.div initial={{ opacity:0, y:-14 }} animate={{ opacity:1, y:0 }} transition={{ delay:0.1, duration:0.7 }}
             style={{ display:"inline-flex", alignItems:"center", gap:9, border:"1px solid rgba(16,185,129,0.2)", borderRadius:999, padding:"7px 20px", marginBottom:48, background:"rgba(16,185,129,0.06)", backdropFilter:"blur(16px)" }}>
@@ -184,7 +205,7 @@ export default function ProjectAfeka({ onBack = () => {} }) {
           </motion.div>
 
           <motion.h1 initial={{ opacity:0, y:24 }} animate={{ opacity:1, y:0 }} transition={{ delay:0.2, duration:0.8, ease:[0.16,1,0.3,1] }}
-            style={{ fontSize:"clamp(56px,9vw,120px)", fontWeight:700, lineHeight:0.9, letterSpacing:"-0.055em", color:"#fff", marginBottom:32, maxWidth:1000 }}>
+            style={{ fontSize:isMobile ? "clamp(44px,17vw,72px)" : "clamp(56px,9vw,120px)", fontWeight:700, lineHeight:0.9, letterSpacing:"-0.055em", color:"#fff", marginBottom:32, maxWidth:1000 }}>
             Afeka
             <span style={{ display:"block", background:"linear-gradient(135deg,#10b981,rgba(16,185,129,0.3))", WebkitBackgroundClip:"text", WebkitTextFillColor:"transparent", backgroundClip:"text" }}>
               Trails
@@ -202,14 +223,14 @@ export default function ProjectAfeka({ onBack = () => {} }) {
           </motion.div>
 
           <motion.div initial={{ opacity:0, y:14 }} animate={{ opacity:1, y:0 }} transition={{ delay:0.8, duration:0.7 }}
-            style={{ display:"flex", gap:14, justifyContent:"center", flexWrap:"wrap" }}>
+            style={{ display:"flex", gap:14, justifyContent:"center", flexWrap:"wrap", flexDirection:isMobile ? "column" : "row", alignItems:"center" }}>
             <Magnetic href="https://afeka-trails-2026-three.vercel.app" target="_blank"
-              style={{ gap:9, background:"#10b981", color:"#000", fontSize:14, fontWeight:700, letterSpacing:"0.02em", padding:"16px 36px", borderRadius:999, boxShadow:"0 0 60px rgba(16,185,129,0.2)" }}>
+              style={{ gap:9, background:"#10b981", color:"#000", fontSize:14, fontWeight:700, letterSpacing:"0.02em", padding:isMobile ? "15px 28px" : "16px 36px", borderRadius:999, boxShadow:"0 0 60px rgba(16,185,129,0.2)", width:isMobile ? "100%" : "auto", maxWidth:isMobile ? 280 : "none" }}>
               Open Live Demo
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
             </Magnetic>
             <Magnetic href="https://github.com/JolianHabib/afeka-trails-2026" target="_blank"
-              style={{ gap:9, border:"1px solid rgba(255,255,255,0.11)", background:"rgba(255,255,255,0.04)", color:"rgba(255,255,255,0.65)", fontSize:14, fontWeight:500, padding:"16px 36px", borderRadius:999, backdropFilter:"blur(14px)" }}>
+              style={{ gap:9, border:"1px solid rgba(255,255,255,0.11)", background:"rgba(255,255,255,0.04)", color:"rgba(255,255,255,0.65)", fontSize:14, fontWeight:500, padding:isMobile ? "15px 28px" : "16px 36px", borderRadius:999, backdropFilter:"blur(14px)", width:isMobile ? "100%" : "auto", maxWidth:isMobile ? 280 : "none" }}>
               View on GitHub
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 00-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0020 4.77 5.07 5.07 0 0019.91 1S18.73.65 16 2.48a13.38 13.38 0 00-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 005 4.77a5.44 5.44 0 00-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 009 18.13V22"/></svg>
             </Magnetic>
@@ -227,7 +248,7 @@ export default function ProjectAfeka({ onBack = () => {} }) {
 
 
       {/* PRODUCT PREVIEW */}
-      <section style={{ position:"relative", zIndex:1, padding:"0 48px 120px" }}>
+      <section style={{ position:"relative", zIndex:1, padding:isMobile ? "0 20px 80px" : "0 48px 120px" }}>
         <div style={{ maxWidth:1200, margin:"0 auto" }}>
           <motion.div initial={{ opacity:0 }} whileInView={{ opacity:1 }} viewport={{ once:true }} style={{ marginBottom:60, textAlign:"center" }}>
             <div style={{ fontSize:11, fontWeight:600, letterSpacing:"0.24em", textTransform:"uppercase", color:"rgba(16,185,129,0.5)", marginBottom:18 }}>Product Preview</div>
@@ -237,7 +258,7 @@ export default function ProjectAfeka({ onBack = () => {} }) {
             </p>
           </motion.div>
 
-          <div style={{ display:"grid", gridTemplateColumns:"repeat(3,1fr)", gap:18 }}>
+          <div style={{ display:"grid", gridTemplateColumns:isMobile ? "1fr" : "repeat(3,1fr)", gap:18 }}>
             {previewImages.map((item,i) => <PreviewCard key={item.title} {...item} delay={i*0.1} />)}
           </div>
         </div>
@@ -245,8 +266,8 @@ export default function ProjectAfeka({ onBack = () => {} }) {
 
       {/* STATS */}
       <section style={{ position:"relative", zIndex:1, borderTop:"1px solid rgba(255,255,255,0.05)", borderBottom:"1px solid rgba(255,255,255,0.05)" }}>
-        <div style={{ maxWidth:1200, margin:"0 auto", padding:"0 48px" }}>
-          <div style={{ display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:0 }}>
+        <div style={{ maxWidth:1200, margin:"0 auto", padding:isMobile ? "0 20px" : "0 48px" }}>
+          <div style={{ display:"grid", gridTemplateColumns:isMobile ? "repeat(2,1fr)" : "repeat(4,1fr)", gap:0 }}>
             {[
               { val:"3", label:"External APIs" },
               { val:"2", label:"Trail Modes" },
@@ -262,20 +283,20 @@ export default function ProjectAfeka({ onBack = () => {} }) {
       </section>
 
       {/* FEATURES */}
-      <section style={{ position:"relative", zIndex:1, padding:"120px 48px" }}>
+      <section style={{ position:"relative", zIndex:1, padding:isMobile ? "80px 20px" : "120px 48px" }}>
         <div style={{ maxWidth:1200, margin:"0 auto" }}>
           <motion.div initial={{ opacity:0 }} whileInView={{ opacity:1 }} viewport={{ once:true }} style={{ marginBottom:60 }}>
             <div style={{ fontSize:11, fontWeight:600, letterSpacing:"0.24em", textTransform:"uppercase", color:"rgba(255,255,255,0.22)", marginBottom:18 }}>Features</div>
             <h2 style={{ fontSize:"clamp(30px,4vw,52px)", fontWeight:700, letterSpacing:"-0.045em", color:"#fff" }}>What it does</h2>
           </motion.div>
-          <div style={{ display:"grid", gridTemplateColumns:"repeat(3,1fr)", gap:16 }}>
+          <div style={{ display:"grid", gridTemplateColumns:isMobile ? "1fr" : "repeat(3,1fr)", gap:16 }}>
             {features.map((f,i) => <FeatureCard key={f.title} {...f} delay={i*0.08} />)}
           </div>
         </div>
       </section>
 
       {/* ARCHITECTURE */}
-      <section style={{ position:"relative", zIndex:1, padding:"0 48px 120px" }}>
+      <section style={{ position:"relative", zIndex:1, padding:isMobile ? "0 20px 80px" : "0 48px 120px" }}>
         <div style={{ maxWidth:1200, margin:"0 auto" }}>
           <motion.div initial={{ opacity:0 }} whileInView={{ opacity:1 }} viewport={{ once:true }} style={{ marginBottom:60 }}>
             <div style={{ fontSize:11, fontWeight:600, letterSpacing:"0.24em", textTransform:"uppercase", color:"rgba(255,255,255,0.22)", marginBottom:18 }}>Architecture</div>
@@ -283,7 +304,7 @@ export default function ProjectAfeka({ onBack = () => {} }) {
           </motion.div>
 
           <motion.div initial={{ opacity:0, y:24 }} whileInView={{ opacity:1, y:0 }} viewport={{ once:true }} transition={{ duration:0.8 }}
-            style={{ padding:"52px", border:"1px solid rgba(255,255,255,0.07)", borderRadius:28, background:"rgba(255,255,255,0.018)", backdropFilter:"blur(20px)" }}>
+            style={{ padding:isMobile ? "26px 18px" : "52px", border:"1px solid rgba(255,255,255,0.07)", borderRadius:28, background:"rgba(255,255,255,0.018)", backdropFilter:"blur(20px)" }}>
 
             {/* Row 1 — User */}
             <div style={{ display:"flex", justifyContent:"center", marginBottom:0 }}>
@@ -298,7 +319,7 @@ export default function ProjectAfeka({ onBack = () => {} }) {
             <div style={{ display:"flex", justifyContent:"center" }}><Arrow vertical /></div>
 
             {/* Row 3 — Middleware + Auth */}
-            <div style={{ display:"flex", justifyContent:"center", gap:24, marginBottom:0 }}>
+            <div style={{ display:"flex", justifyContent:"center", gap:isMobile ? 12 : 24, marginBottom:0, flexWrap:"wrap" }}>
               <ArchNode label="JWT Middleware" sub="Route protection" color="#8b5cf6" delay={0.25} />
               <ArchNode label="Auth Pages" sub="Login / Register" color="#8b5cf6" delay={0.3} />
             </div>
@@ -310,7 +331,7 @@ export default function ProjectAfeka({ onBack = () => {} }) {
             </div>
 
             {/* Row 5 — 3 external APIs */}
-            <div style={{ display:"flex", justifyContent:"center", gap:8, marginTop:0 }}>
+            <div style={{ display:"flex", justifyContent:"center", gap:isMobile ? 10 : 8, marginTop:0, flexWrap:"wrap" }}>
               <div style={{ display:"flex", flexDirection:"column", alignItems:"center" }}>
                 <Arrow vertical />
                 <ArchNode label="GraphHopper" sub="Real road routing" color="#10b981" delay={0.4} />
@@ -345,7 +366,7 @@ export default function ProjectAfeka({ onBack = () => {} }) {
       </section>
 
       {/* HOW TO USE */}
-      <section style={{ position:"relative", zIndex:1, padding:"0 48px 120px" }}>
+      <section style={{ position:"relative", zIndex:1, padding:isMobile ? "0 20px 80px" : "0 48px 120px" }}>
         <div style={{ maxWidth:1200, margin:"0 auto" }}>
           <motion.div initial={{ opacity:0 }} whileInView={{ opacity:1 }} viewport={{ once:true }} style={{ marginBottom:60 }}>
             <div style={{ fontSize:11, fontWeight:600, letterSpacing:"0.24em", textTransform:"uppercase", color:"rgba(255,255,255,0.22)", marginBottom:18 }}>Usage</div>
@@ -364,7 +385,7 @@ export default function ProjectAfeka({ onBack = () => {} }) {
                 initial={{ opacity:0, x:-16 }} whileInView={{ opacity:1, x:0 }} viewport={{ once:true }}
                 transition={{ delay:i*0.08, duration:0.7, ease:[0.16,1,0.3,1] }}
                 whileHover={{ background:"rgba(16,185,129,0.05)", borderColor:"rgba(16,185,129,0.2)", paddingLeft:52 }}
-                style={{ display:"grid", gridTemplateColumns:"72px 1fr", gap:32, padding:"28px 40px", border:"1px solid rgba(255,255,255,0.07)", background:"rgba(255,255,255,0.018)", borderRadius:16, cursor:"default", transition:"all 0.35s cubic-bezier(0.16,1,0.3,1)" }}>
+                style={{ display:"grid", gridTemplateColumns:isMobile ? "1fr" : "72px 1fr", gap:isMobile ? 10 : 32, padding:isMobile ? "22px 20px" : "28px 40px", border:"1px solid rgba(255,255,255,0.07)", background:"rgba(255,255,255,0.018)", borderRadius:16, cursor:"default", transition:"all 0.35s cubic-bezier(0.16,1,0.3,1)" }}>
                 <span style={{ fontSize:11, fontWeight:700, letterSpacing:"0.18em", color:"rgba(16,185,129,0.5)", alignSelf:"center" }}>{step.num}</span>
                 <div>
                   <h3 style={{ fontSize:17, fontWeight:600, color:"#fff", letterSpacing:"-0.025em", marginBottom:7 }}>{step.title}</h3>
@@ -377,10 +398,10 @@ export default function ProjectAfeka({ onBack = () => {} }) {
       </section>
 
       {/* CTA */}
-      <section style={{ position:"relative", zIndex:1, padding:"0 48px 90px" }}>
+      <section style={{ position:"relative", zIndex:1, padding:isMobile ? "0 20px 70px" : "0 48px 90px" }}>
         <div style={{ maxWidth:1200, margin:"0 auto" }}>
           <motion.div initial={{ opacity:0, y:40 }} whileInView={{ opacity:1, y:0 }} viewport={{ once:true }} transition={{ duration:1 }}
-            style={{ position:"relative", padding:"80px", border:"1px solid rgba(16,185,129,0.12)", borderRadius:32, background:"rgba(16,185,129,0.03)", textAlign:"center", overflow:"hidden" }}>
+            style={{ position:"relative", padding:isMobile ? "44px 22px" : "80px", border:"1px solid rgba(16,185,129,0.12)", borderRadius:32, background:"rgba(16,185,129,0.03)", textAlign:"center", overflow:"hidden" }}>
             <div style={{ position:"absolute", top:-200, left:"50%", transform:"translateX(-50%)", width:600, height:400, background:"radial-gradient(circle,rgba(16,185,129,0.08) 0%,transparent 70%)", pointerEvents:"none" }} />
             <motion.div animate={{ rotate:360 }} transition={{ duration:60, repeat:Infinity, ease:"linear" }}
               style={{ position:"absolute", top:"50%", left:"50%", transform:"translate(-50%,-50%)", width:500, height:500, border:"1px solid rgba(16,185,129,0.06)", borderRadius:"50%", pointerEvents:"none" }} />
@@ -393,7 +414,7 @@ export default function ProjectAfeka({ onBack = () => {} }) {
                 Built by Jolian Habib & Buraq Yassin · Afeka College 2026
               </p>
               <Magnetic href="https://afeka-trails-2026-three.vercel.app" target="_blank"
-                style={{ gap:10, background:"#10b981", color:"#000", fontSize:15, fontWeight:700, padding:"18px 44px", borderRadius:999, boxShadow:"0 0 80px rgba(16,185,129,0.15)" }}>
+                style={{ gap:10, background:"#10b981", color:"#000", fontSize:15, fontWeight:700, padding:isMobile ? "16px 28px" : "18px 44px", borderRadius:999, boxShadow:"0 0 80px rgba(16,185,129,0.15)", width:isMobile ? "100%" : "auto", maxWidth:isMobile ? 280 : "none" }}>
                 Open Afeka Trails
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
               </Magnetic>
@@ -403,7 +424,7 @@ export default function ProjectAfeka({ onBack = () => {} }) {
       </section>
 
       {/* FOOTER */}
-      <footer style={{ position:"relative", zIndex:1, borderTop:"1px solid rgba(255,255,255,0.045)", padding:"28px 48px", display:"flex", alignItems:"center", justifyContent:"space-between", maxWidth:1200, margin:"0 auto" }}>
+      <footer style={{ position:"relative", zIndex:1, borderTop:"1px solid rgba(255,255,255,0.045)", padding:isMobile ? "26px 20px" : "28px 48px", display:"flex", alignItems:"center", justifyContent:"space-between", maxWidth:1200, margin:"0 auto", flexDirection:isMobile ? "column" : "row", gap:isMobile ? 16 : 0 }}>
         <motion.button onClick={onBack} whileHover={{ x:-3 }}
           style={{ display:"flex", alignItems:"center", gap:7, fontSize:11, fontWeight:600, letterSpacing:"0.12em", textTransform:"uppercase", color:"rgba(255,255,255,0.2)", background:"none", border:"none", cursor:"default" }}
           onMouseEnter={e=>e.currentTarget.style.color="#fff"} onMouseLeave={e=>e.currentTarget.style.color="rgba(255,255,255,0.2)"}>
