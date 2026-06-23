@@ -2981,7 +2981,7 @@ export default function Portfolio() {
             ))}
           </nav>
           <div style={{ display:"flex", gap:isMobile ? 6 : 8, alignItems:"center" }}>
-            <Magnetic href="/cv.pdf" target="_blank"
+            <Magnetic href="/CV_JolianHabib.pdf" target="_blank"
               style={{ fontSize:11, fontWeight:600, letterSpacing:"0.1em", border:"1px solid rgba(255,255,255,0.12)", background:"rgba(255,255,255,0.04)", color:"rgba(255,255,255,0.65)", padding:isMobile ? "10px 13px" : "11px 20px", borderRadius:999, gap:7, backdropFilter:"blur(12px)" }}>
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
               CV
@@ -3032,7 +3032,7 @@ export default function Portfolio() {
             style={{ gap: 0, border: "1px solid rgba(255,255,255,0.11)", background: "rgba(255,255,255,0.04)", color: "rgba(255,255,255,0.62)", fontSize: 14, fontWeight: 500, padding: "17px 36px", borderRadius: 999, backdropFilter: "blur(14px)" }}>
             About me
           </Magnetic>
-          <Magnetic href="/cv.pdf" target="_blank"
+          <Magnetic href="/CV_JolianHabib.pdf" target="_blank"
             style={{ gap:8, border:"1px solid rgba(255,255,255,0.09)", background:"rgba(255,255,255,0.025)", color:"rgba(255,255,255,0.45)", fontSize:13, fontWeight:500, padding:"17px 28px", borderRadius:999, backdropFilter:"blur(14px)" }}>
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
             Download CV
