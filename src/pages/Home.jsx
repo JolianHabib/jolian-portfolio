@@ -1,209 +1,6 @@
 import { useEffect, useState, useRef } from "react";
 import { motion, AnimatePresence, useScroll, useTransform, useSpring, useMotionValue } from "framer-motion";
 
-
-/* ─── MOBILE HELPER ─── */
-function useIsMobile() {
-  const [isMobile, setIsMobile] = useState(false);
-
-  useEffect(() => {
-    const check = () => setIsMobile(window.innerWidth <= 768);
-    check();
-    window.addEventListener("resize", check);
-    return () => window.removeEventListener("resize", check);
-  }, []);
-
-  return isMobile;
-}
-
-
-
-
-/* ─── RESPONSIVE GLOBAL FIXES ─── */
-function ResponsiveGlobalStyles() {
-  return (
-    <style>{`
-      html, body, #root {
-        width: 100%;
-        max-width: 100%;
-        overflow-x: hidden;
-      }
-
-      @media (max-width: 900px) {
-        * { cursor: auto !important; }
-        a, button { cursor: pointer !important; }
-
-        [style*="mix-blend-mode: difference"][style*="position: fixed"],
-        [style*="right: 28px"][style*="position: fixed"] {
-          display: none !important;
-        }
-
-        [style*="padding: 0px 48px"],
-        [style*="padding: 0 48px"],
-        [style*="padding: 120px 48px"],
-        [style*="padding: 130px 48px"],
-        [style*="padding: 28px 48px"],
-        [style*="padding: 0px 48px 120px"],
-        [style*="padding: 0 48px 120px"],
-        [style*="padding: 0px 48px 150px"],
-        [style*="padding: 0 48px 150px"],
-        [style*="padding: 0px 48px 90px"],
-        [style*="padding: 0 48px 90px"] {
-          padding-left: 20px !important;
-          padding-right: 20px !important;
-        }
-
-        section[style*="min-height: 100vh"] {
-          min-height: auto !important;
-          padding-top: 112px !important;
-          padding-bottom: 72px !important;
-        }
-
-        [style*="max-width: 1200px"] {
-          max-width: 100% !important;
-        }
-
-        [style*="grid-template-columns: repeat(4, 1fr)"],
-        [style*="grid-template-columns: repeat(3, 1fr)"],
-        [style*="grid-template-columns: repeat(2, 1fr)"],
-        [style*="grid-template-columns: 380px 1fr"],
-        [style*="grid-template-columns: 1fr 1fr"],
-        [style*="grid-template-columns: 72px 1fr"] {
-          grid-template-columns: 1fr !important;
-          gap: 18px !important;
-        }
-
-        [style*="height: 360px"] {
-          height: 225px !important;
-        }
-
-        [style*="padding: 52px"] {
-          padding: 28px 20px !important;
-        }
-
-        [style*="padding: 80px"] {
-          padding: 42px 22px !important;
-        }
-
-        [style*="padding: 32px 28px"] {
-          padding: 24px 20px !important;
-        }
-
-        [style*="padding: 28px 40px"] {
-          padding: 22px 20px !important;
-        }
-
-        [style*="gap: 72px"] {
-          gap: 32px !important;
-        }
-
-        [style*="display: flex"][style*="justify-content: center"] {
-          flex-wrap: wrap !important;
-        }
-
-        h1[style] {
-          font-size: clamp(42px, 15vw, 72px) !important;
-          line-height: 0.95 !important;
-        }
-
-        h2[style] {
-          font-size: clamp(26px, 9vw, 40px) !important;
-          line-height: 1.08 !important;
-        }
-
-        p[style] {
-          max-width: 100% !important;
-        }
-
-        
-        /* Mobile portfolio polish */
-        header nav {
-          display: none !important;
-        }
-
-        header [style*="gap: 8px"][style*="align-items: center"] {
-          gap: 6px !important;
-        }
-
-        [style*="grid-template-columns: 88px 1fr auto"] {
-          grid-template-columns: 1fr !important;
-          gap: 18px !important;
-        }
-
-        [style*="grid-template-columns: 88px 1fr auto"] [style*="align-items: flex-end"] {
-          display: none !important;
-        }
-
-        [style*="padding: 32px 40px"][style*="border-radius: 18px"] {
-          padding: 24px 22px !important;
-          border-radius: 22px !important;
-          background: rgba(255,255,255,0.026) !important;
-        }
-
-        [style*="font-size: 23px"][style*="letter-spacing: -0.035em"] {
-          font-size: 22px !important;
-          line-height: 1.12 !important;
-        }
-
-        [style*="color: rgba(255,255,255,0.35)"][style*="line-height: 1.75"] {
-          color: rgba(255,255,255,0.48) !important;
-        }
-
-        footer[style] {
-          flex-direction: column !important;
-          gap: 14px !important;
-          text-align: center !important;
-        }
-      }
-
-      @media (max-width: 520px) {
-        [style*="padding: 0px 48px"],
-        [style*="padding: 0 48px"],
-        [style*="padding: 120px 48px"],
-        [style*="padding: 130px 48px"],
-        [style*="padding: 28px 48px"],
-        [style*="padding: 0px 48px 120px"],
-        [style*="padding: 0 48px 120px"],
-        [style*="padding: 0px 48px 150px"],
-        [style*="padding: 0 48px 150px"],
-        [style*="padding: 0px 48px 90px"],
-        [style*="padding: 0 48px 90px"] {
-          padding-left: 16px !important;
-          padding-right: 16px !important;
-        }
-
-        [style*="height: 360px"] {
-          height: 190px !important;
-        }
-
-        [style*="padding: 16px 36px"],
-        [style*="padding: 18px 44px"] {
-          width: 100% !important;
-          max-width: 320px !important;
-          padding: 14px 22px !important;
-        }
-
-        [style*="padding: 80px"] {
-          padding: 36px 18px !important;
-          border-radius: 22px !important;
-        }
-
-        [style*="padding: 52px"] {
-          padding: 24px 16px !important;
-          border-radius: 22px !important;
-        }
-
-        [style*="font-size: 36px"] {
-          font-size: 28px !important;
-        }
-
-        [style*="letter-spacing: 0.24em"] {
-          letter-spacing: 0.15em !important;
-        }
-      }
-    `}</style>
-  );
-}
 /* ─── PAGE TRANSITION CURTAIN ─── */
 function Curtain({ isVisible, direction = "down" }) {
   return (
@@ -340,23 +137,22 @@ function Counter({ value, suffix = "" }) {
 
 /* ─── DATA ─── */
 const skills = [
-  { num: "01", title: "Backend", sub: "Java & Systems Design", text: "Clean object-oriented architecture, JDBC integrations, and production-grade Java systems built with care and precision.", tag: "Java · OOP · JDBC" },
-  { num: "02", title: "Databases", sub: "SQL & Data Modeling", text: "Full schema design, triggers, constraints, and analytical queries. Data structured to serve real systems with integrity.", tag: "PostgreSQL · MySQL · PLpgSQL" },
-  { num: "03", title: "Frontend", sub: "Web & UI Development", text: "Clean HTML, CSS, and React interfaces with a focus on clarity, usability, and a polished final result.", tag: "React · HTML · CSS · JS" },
+  { num: "01", title: "Backend Engineering", sub: "APIs, authentication & architecture", text: "ASP.NET Core and Node.js services, authorization flows, data validation and maintainable client-server architecture.", tag: "C# · ASP.NET Core · Node.js · REST" },
+  { num: "02", title: "Data & Cloud", sub: "Persistence to production", text: "Relational schema design, EF Core, PostgreSQL and SQL Server alongside MongoDB, cloud integrations and live deployments.", tag: "PostgreSQL · SQL Server · MongoDB · Cloudflare" },
+  { num: "03", title: "Full-Stack Delivery", sub: "From requirements to release", text: "React and TypeScript interfaces connected to real backends, secure workflows and responsive user experiences.", tag: "React · TypeScript · Next.js · Testing" },
 ];
 
 const projects = [
-  { num: "001", title: "Afeka Trails", desc: "AI-powered trail planning app — generates real cycling and trekking routes with interactive maps, weather forecasts, and saved history. Built with Next.js and deployed on Vercel.", tags: ["Next.js", "AI", "Leaflet", "Vercel"], year: "2026", color: "rgba(16,185,129,0.12)", url: "https://afeka-trails-2026-three.vercel.app" },
-  { num: "002", title: "Checkers Game", desc: "Full-stack .NET checkers game with a WinForms client, ASP.NET Core server, Razor Pages web interface, REST API, and PostgreSQL database.", tags: [".NET", "WinForms", "ASP.NET", "PostgreSQL"], year: "2026", color: "rgba(99,102,241,0.13)", url: "https://github.com/JolianHabib/DotNet-Game-Project" },
-  { num: "003", title: "Shift Management System", desc: "A Java-based shift management system featuring employee scheduling, role-based menus, attendance tracking, and clean object-oriented architecture.", tags: ["Java", "OOP", "Scheduling"], year: "2025", color: "rgba(249,115,22,0.12)", url: "https://github.com/JolianHabib/ShiftManagementSystem" },
-  { num: "004", title: "Medical Clinic Database", desc: "A complete PostgreSQL-based medical clinic database with full schema, sample data, triggers, constraints, and analytical SQL queries.", tags: ["PostgreSQL", "PLpgSQL", "Schema Design"], year: "2025", color: "rgba(6,182,212,0.11)", url: "https://github.com/JolianHabib/Medical-Clinic-Database" },
-  { num: "005", title: "Exam System", desc: "Java exam management system with OOP, JDBC, and PostgreSQL. Supports teachers, subjects, questions, answers, and full exam creation.", tags: ["Java", "JDBC", "PostgreSQL"], year: "2024", color: "rgba(168,85,247,0.11)", url: "https://github.com/JolianHabib/ExamSystem" },
-  { num: "006", title: "Game Factory", desc: "C program for managing a toy and game factory — departments, workers, machines, games, customers, and orders with structs and linked lists.", tags: ["C", "Structs", "Linked Lists", "File I/O"], year: "2023", color: "rgba(225,29,72,0.1)", url: "https://github.com/JolianHabib/GameFactory-C-Project" },
+  { num: "001", title: "UniPilot", kicker: "FULL-STACK / AI WORKSPACE", desc: "An academic project workspace that transforms PDF requirements into structured tasks and collaborative workflows. REST API, database persistence, authentication and access roles.", tags: ["ASP.NET Core", "React", "PostgreSQL", "Google OAuth"], year: "2026", color: "rgba(132,115,255,0.14)", url: "https://unipilot-kappa.vercel.app", repo: "https://github.com/JolianHabib/unipilot", proof: "Live application · Full-stack system" },
+  { num: "002", title: "Go.Webly / Nermin Studio", kicker: "PRODUCTION / CLIENT DELIVERY", desc: "A real booking platform for a beauty studio: appointments, configurable availability, client management and business workflows, built and deployed for a client.", tags: ["React", "TypeScript", "Cloudflare Workers", "D1 / R2"], year: "2026", color: "rgba(230,173,125,0.12)", url: "https://nerminstudio.jolian-habib.com", proof: "Live client deployment · Booking workflows" },
+  { num: "003", title: "Afeka Trails", kicker: "AI / MAPS / FULL-STACK", desc: "Trip-planning experience combining AI suggestions, interactive maps, routing and weather integrations with saved trip history.", tags: ["Next.js", "Express", "MongoDB", "Leaflet"], year: "2026", color: "rgba(16,185,129,0.12)", url: "https://afeka-trails-2026-three.vercel.app", repo: "https://github.com/JolianHabib/afeka-trails-2026", proof: "Live application · External APIs" },
+  { num: "004", title: "Checkers — Client / Server", kicker: "C# / DESKTOP / API", desc: "A desktop client and ASP.NET Core server communicating through HTTP APIs, with game state, persistence and replay of completed games.", tags: ["C#", "WinForms", "ASP.NET Core", "SQL Server"], year: "2026", color: "rgba(99,102,241,0.13)", url: "https://github.com/JolianHabib/DotNet-Game-Project", proof: "Client-server architecture · Persistence" },
+  { num: "005", title: "Shift Management System", kicker: "JAVA / OOP", desc: "Employee scheduling, role-based navigation and attendance tracking through structured object-oriented programming.", tags: ["Java", "OOP", "Scheduling"], year: "2025", color: "rgba(249,115,22,0.12)", url: "https://github.com/JolianHabib/ShiftManagementSystem", proof: "Object-oriented system design" },
+  { num: "006", title: "Medical Clinic Database", kicker: "DATABASE ENGINEERING", desc: "Relational database design with constraints, triggers, sample data and analytical SQL queries.", tags: ["PostgreSQL", "PL/pgSQL", "SQL"], year: "2025", color: "rgba(6,182,212,0.11)", url: "https://github.com/JolianHabib/Medical-Clinic-Database", proof: "Schema design · Data integrity" },
+  { num: "007", title: "Exam Management System", kicker: "JAVA / DATA", desc: "Exam creation and management, using object-oriented Java code and JDBC persistence.", tags: ["Java", "JDBC", "PostgreSQL"], year: "2024", color: "rgba(168,85,247,0.11)", url: "https://github.com/JolianHabib/ExamSystem", proof: "OOP · Relational database" },
+  { num: "008", title: "Game Factory", kicker: "C / DATA STRUCTURES", desc: "A C project managing factory entities with structs, linked lists and file I/O.", tags: ["C", "Linked Lists", "File I/O"], year: "2023", color: "rgba(225,29,72,0.1)", url: "https://github.com/JolianHabib/GameFactory-C-Project", proof: "Data structures · Systems fundamentals" },
 ];
-
-const PROJECT_MAP = { "001":"afeka", "002":"checkers", "003":"shift", "004":"clinic", "005":"exam", "006":"factory" };
-
-
+const PROJECT_MAP = { "004":"checkers", "005":"shift", "006":"clinic", "007":"exam", "008":"factory" };
 
 /* ─── CUSTOM CURSOR ─── */
 function CustomCursor() {
@@ -495,7 +291,7 @@ function PhotoShowcase() {
               <div style={{ position: "absolute", bottom: 24, left: 24, right: 24 }}>
                 <div style={{ fontSize: 10, fontWeight: 500, letterSpacing: "0.2em", textTransform: "uppercase", color: "rgba(255,255,255,0.3)", marginBottom: 7 }}>Software Engineer</div>
                 <div style={{ fontSize: 20, fontWeight: 600, letterSpacing: "-0.03em", color: "#fff", lineHeight: 1.2 }}>Jolian Habib</div>
-                <div style={{ fontSize: 12, color: "rgba(255,255,255,0.35)", marginTop: 5, letterSpacing: "0.04em" }}>Java · SQL · React · C</div>
+                <div style={{ fontSize: 12, color: "rgba(255,255,255,0.35)", marginTop: 5, letterSpacing: "0.04em" }}>C# · TypeScript · React · PostgreSQL</div>
               </div>
               {/* profile badge */}
               <div style={{ position: "absolute", top: 18, right: 18, display: "flex", alignItems: "center", gap: 7, border: "1px solid rgba(255,255,255,0.1)", borderRadius: 999, padding: "5px 12px", background: "rgba(0,0,0,0.55)", backdropFilter: "blur(16px)" }}>
@@ -510,16 +306,16 @@ function PhotoShowcase() {
           <motion.div initial={{ opacity: 0, x: 28 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.9, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}>
             <div style={{ fontSize: 10, fontWeight: 600, letterSpacing: "0.26em", textTransform: "uppercase", color: "rgba(255,255,255,0.22)", marginBottom: 26 }}>About</div>
             <h2 style={{ fontSize: "clamp(30px, 3.5vw, 50px)", fontWeight: 600, letterSpacing: "-0.045em", lineHeight: 1.08, color: "#fff", marginBottom: 26 }}>
-              Luxury is when every detail feels necessary.
+              Engineering behind every interaction.
             </h2>
             <p style={{ fontSize: 15, lineHeight: 1.9, color: "rgba(255,255,255,0.38)", marginBottom: 16, fontWeight: 300 }}>
-              B.Sc. Software Engineering student at Afeka College, specializing in Software & Information Technologies. My work combines backend logic, database design, and clean user interfaces.
+              Final-year B.Sc. Software Engineering student at Afeka, specializing in Software & Information Technologies. My work spans API architecture, authentication, database design, cloud deployment and accessible interfaces.
             </p>
             <p style={{ fontSize: 15, lineHeight: 1.9, color: "rgba(255,255,255,0.24)", marginBottom: 44, fontWeight: 300 }}>
-              I believe software is a craft — built with care, clarity, and intention. Not just making things work, but making them well-designed and meaningful.
+              I co-founded Go.Webly and delivered production web applications for real clients. The goal: software that is maintainable behind the scenes and exceptional to use.
             </p>
             <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 2, marginBottom: 40 }}>
-              {[{ val: "6", lab: "Projects" }, { val: "5+", lab: "Technologies" }, { val: "Afeka", lab: "College" }].map((s, i) => (
+              {[{ val: "8", lab: "Projects" }, { val: "5+", lab: "Technologies" }, { val: "Afeka", lab: "College" }].map((s, i) => (
                 <div key={i} style={{ padding: "18px 0", borderTop: "1px solid rgba(255,255,255,0.07)" }}>
                   <div style={{ fontSize: 24, fontWeight: 600, letterSpacing: "-0.04em", color: "#fff", marginBottom: 5 }}>
                     <Counter value={s.val} />
@@ -923,7 +719,7 @@ function ProjectAfeka({ onBack }) {
             <div style={{ fontSize:11, fontWeight:600, letterSpacing:"0.24em", textTransform:"uppercase", color:"rgba(255,255,255,0.22)", marginBottom:18 }}>Features</div>
             <h2 style={{ fontSize:"clamp(30px,4vw,52px)", fontWeight:700, letterSpacing:"-0.045em", color:"#fff" }}>What it does</h2>
           </motion.div>
-          <div style={{ display:"grid", gridTemplateColumns:"repeat(3,1fr)", gap:16 }}>
+          <div className="portfolio-skill-grid" style={{ display:"grid", gridTemplateColumns:"repeat(3,1fr)", gap:16 }}>
             {features.map((f,i) => <AfekaFeatureCard key={f.title} {...f} delay={i*0.08} />)}
           </div>
         </div>
@@ -1299,7 +1095,7 @@ function ProjectCheckers({ onBack }) {
             <div style={{ fontSize:11, fontWeight:600, letterSpacing:"0.24em", textTransform:"uppercase", color:"rgba(255,255,255,0.22)", marginBottom:18 }}>Features</div>
             <h2 style={{ fontSize:"clamp(30px,4vw,52px)", fontWeight:700, letterSpacing:"-0.045em", color:"#fff" }}>What it does</h2>
           </motion.div>
-          <div style={{ display:"grid", gridTemplateColumns:"repeat(3,1fr)", gap:16 }}>
+          <div className="portfolio-skill-grid" style={{ display:"grid", gridTemplateColumns:"repeat(3,1fr)", gap:16 }}>
             {features.map((f,i) => <CheckersFeatureCard key={f.title} {...f} delay={i*0.08} />)}
           </div>
         </div>
@@ -1642,7 +1438,7 @@ function ProjectShift({ onBack }) {
             <div style={{ fontSize:11, fontWeight:600, letterSpacing:"0.24em", textTransform:"uppercase", color:"rgba(255,255,255,0.22)", marginBottom:18 }}>Features</div>
             <h2 style={{ fontSize:"clamp(30px,4vw,52px)", fontWeight:700, letterSpacing:"-0.045em", color:"#fff" }}>What it does</h2>
           </motion.div>
-          <div style={{ display:"grid", gridTemplateColumns:"repeat(3,1fr)", gap:16 }}>
+          <div className="portfolio-skill-grid" style={{ display:"grid", gridTemplateColumns:"repeat(3,1fr)", gap:16 }}>
             {features.map((f,i) => <ShiftFeatureCard key={f.title} {...f} delay={i*0.08} />)}
           </div>
         </div>
@@ -1985,7 +1781,7 @@ function ProjectClinic({ onBack }) {
             <div style={{ fontSize:11, fontWeight:600, letterSpacing:"0.24em", textTransform:"uppercase", color:"rgba(255,255,255,0.22)", marginBottom:18 }}>Features</div>
             <h2 style={{ fontSize:"clamp(30px,4vw,52px)", fontWeight:700, letterSpacing:"-0.045em", color:"#fff" }}>What it does</h2>
           </motion.div>
-          <div style={{ display:"grid", gridTemplateColumns:"repeat(3,1fr)", gap:16 }}>
+          <div className="portfolio-skill-grid" style={{ display:"grid", gridTemplateColumns:"repeat(3,1fr)", gap:16 }}>
             {features.map((f,i) => <ClinicFeatureCard key={f.title} {...f} delay={i*0.08} />)}
           </div>
         </div>
@@ -2328,7 +2124,7 @@ function ProjectExam({ onBack }) {
             <div style={{ fontSize:11, fontWeight:600, letterSpacing:"0.24em", textTransform:"uppercase", color:"rgba(255,255,255,0.22)", marginBottom:18 }}>Features</div>
             <h2 style={{ fontSize:"clamp(30px,4vw,52px)", fontWeight:700, letterSpacing:"-0.045em", color:"#fff" }}>What it does</h2>
           </motion.div>
-          <div style={{ display:"grid", gridTemplateColumns:"repeat(3,1fr)", gap:16 }}>
+          <div className="portfolio-skill-grid" style={{ display:"grid", gridTemplateColumns:"repeat(3,1fr)", gap:16 }}>
             {features.map((f,i) => <ExamFeatureCard key={f.title} {...f} delay={i*0.08} />)}
           </div>
         </div>
@@ -2663,7 +2459,7 @@ function ProjectGameFactory({ onBack }) {
             <div style={{ fontSize:11, fontWeight:600, letterSpacing:"0.24em", textTransform:"uppercase", color:"rgba(255,255,255,0.22)", marginBottom:18 }}>Features</div>
             <h2 style={{ fontSize:"clamp(30px,4vw,52px)", fontWeight:700, letterSpacing:"-0.045em", color:"#fff" }}>What it does</h2>
           </motion.div>
-          <div style={{ display:"grid", gridTemplateColumns:"repeat(3,1fr)", gap:16 }}>
+          <div className="portfolio-skill-grid" style={{ display:"grid", gridTemplateColumns:"repeat(3,1fr)", gap:16 }}>
             {features.map((f,i) => <GameFactoryFeatureCard key={f.title} {...f} delay={i*0.08} />)}
           </div>
         </div>
@@ -2874,7 +2670,6 @@ function ContactForm() {
 
 
 export default function Portfolio() {
-  const isMobile = useIsMobile();
   const [activeProject, setActiveProject] = useState(null);
   const [showCurtain, setShowCurtain] = useState(false);
   const [curtainDir, setCurtainDir] = useState("down");
@@ -2920,7 +2715,6 @@ export default function Portfolio() {
 
   if (activeProject) return (
     <>
-      <ResponsiveGlobalStyles />
       <Curtain isVisible={showCurtain} direction={curtainDir} />
       <PageWrapper key={activeProject}>{projectPages[activeProject]}</PageWrapper>
     </>
@@ -2928,7 +2722,6 @@ export default function Portfolio() {
 
   return (
     <>
-    <ResponsiveGlobalStyles />
     <Curtain isVisible={showCurtain} direction={curtainDir} />
     <div style={{ background: "#030303", color: "#f5f5f7", fontFamily: "'SF Pro Display',-apple-system,BlinkMacSystemFont,sans-serif", minHeight: "100vh", overflowX: "hidden", cursor: "none" }}>
       <style>{`
@@ -2965,12 +2758,12 @@ export default function Portfolio() {
 
       {/* ── NAV ── */}
       <motion.header style={{ position: "fixed", top: 0, left: 0, right: 0, zIndex: 100, backdropFilter: "blur(32px)", WebkitBackdropFilter: "blur(32px)", borderBottom: "1px solid rgba(255,255,255,0.055)", background: navBg }}>
-        <div style={{ maxWidth: 1200, margin: "0 auto", padding: isMobile ? "0 18px" : "0 48px", height: 62, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12 }}>
+        <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 48px", height: 62, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
           <motion.span whileHover={{ letterSpacing: "0.34em" }} transition={{ duration: 0.3 }}
             style={{ fontSize: 14, fontWeight: 700, letterSpacing: "0.26em", color: "#fff", textTransform: "uppercase", cursor: "none" }}>
             JH
           </motion.span>
-          <nav style={{ display: isMobile ? "none" : "flex", gap: 2 }}>
+          <nav style={{ display: "flex", gap: 2 }}>
             {["About", "Skills", "Projects", "Contact"].map(item => (
               <motion.a key={item} href={`#${item.toLowerCase()}`} whileHover={{ color: "#fff" }}
                 onMouseEnter={e => e.currentTarget.style.background = "rgba(255,255,255,0.06)"}
@@ -2980,14 +2773,14 @@ export default function Portfolio() {
               </motion.a>
             ))}
           </nav>
-          <div style={{ display:"flex", gap:isMobile ? 6 : 8, alignItems:"center" }}>
-            <Magnetic href="/CV_JolianHabib.pdf" target="_blank"
-              style={{ fontSize:11, fontWeight:600, letterSpacing:"0.1em", border:"1px solid rgba(255,255,255,0.12)", background:"rgba(255,255,255,0.04)", color:"rgba(255,255,255,0.65)", padding:isMobile ? "10px 13px" : "11px 20px", borderRadius:999, gap:7, backdropFilter:"blur(12px)" }}>
+          <div style={{ display:"flex", gap:8, alignItems:"center" }}>
+            <Magnetic href="/cv.pdf" target="_blank"
+              style={{ fontSize:11, fontWeight:600, letterSpacing:"0.1em", border:"1px solid rgba(255,255,255,0.12)", background:"rgba(255,255,255,0.04)", color:"rgba(255,255,255,0.65)", padding:"11px 20px", borderRadius:999, gap:7, backdropFilter:"blur(12px)" }}>
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
               CV
             </Magnetic>
             <Magnetic href="#contact"
-              style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.1em", background: "#f5f5f7", color: "#000", padding: isMobile ? "10px 16px" : "11px 26px", borderRadius: 999, gap: 0 }}>
+              style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.1em", background: "#f5f5f7", color: "#000", padding: "11px 26px", borderRadius: 999, gap: 0 }}>
               Contact
             </Magnetic>
           </div>
@@ -3003,10 +2796,10 @@ export default function Portfolio() {
           style={{ display: "inline-flex", alignItems: "center", gap: 9, border: "1px solid rgba(255,255,255,0.1)", borderRadius: 999, padding: "7px 20px", marginBottom: 52, background: "rgba(255,255,255,0.035)", backdropFilter: "blur(16px)" }}>
           <motion.span animate={{ opacity: [1, 0.3, 1] }} transition={{ duration: 2, repeat: Infinity }}
             style={{ width: 7, height: 7, borderRadius: "50%", background: "#34d399", display: "inline-block", boxShadow: "0 0 10px #34d399" }} />
-          <span style={{ fontSize: 11, fontWeight: 600, letterSpacing: "0.2em", textTransform: "uppercase", color: "rgba(255,255,255,0.52)" }}>Selected projects · Built with care and clarity</span>
+          <span style={{ fontSize: 11, fontWeight: 600, letterSpacing: "0.2em", textTransform: "uppercase", color: "rgba(255,255,255,0.52)" }}>FINAL-YEAR SOFTWARE ENGINEERING STUDENT · OPEN TO STUDENT ROLES</span>
         </motion.div>
 
-        <h1 style={{ fontSize: isMobile ? "clamp(46px, 18vw, 76px)" : "clamp(64px, 10vw, 140px)", fontWeight: 700, lineHeight: 0.9, letterSpacing: "-0.055em", color: "#fff", marginBottom: 36, maxWidth: 1100 }}>
+        <h1 style={{ fontSize: "clamp(64px, 10vw, 140px)", fontWeight: 700, lineHeight: 0.88, letterSpacing: "-0.055em", color: "#fff", marginBottom: 36, maxWidth: 1100 }}>
           <Split text="Software" delay={0.2} />
           <span style={{ display: "block", overflow: "hidden" }}>
             <motion.span initial={{ y: "110%" }} animate={{ y: 0 }} transition={{ delay: 0.56, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
@@ -3018,7 +2811,7 @@ export default function Portfolio() {
 
         <motion.p initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.85, duration: 0.8 }}
           style={{ fontSize: "clamp(16px,2vw,20px)", color: "rgba(255,255,255,0.36)", lineHeight: 1.8, maxWidth: 540, margin: "0 auto 56px", fontWeight: 300 }}>
-          Software Engineering student at Afeka College. I build full-stack systems with Java, .NET, React, and PostgreSQL, focusing on clean backend logic, database-driven applications, and polished user experiences.
+          Final-year B.Sc. Software Engineering student at Afeka. I engineer real applications — from APIs and authentication to databases, cloud deployment and refined user experiences.
         </motion.p>
 
         <motion.div initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 1, duration: 0.7 }}
@@ -3032,7 +2825,7 @@ export default function Portfolio() {
             style={{ gap: 0, border: "1px solid rgba(255,255,255,0.11)", background: "rgba(255,255,255,0.04)", color: "rgba(255,255,255,0.62)", fontSize: 14, fontWeight: 500, padding: "17px 36px", borderRadius: 999, backdropFilter: "blur(14px)" }}>
             About me
           </Magnetic>
-          <Magnetic href="/CV_JolianHabib.pdf" target="_blank"
+          <Magnetic href="/cv.pdf" target="_blank"
             style={{ gap:8, border:"1px solid rgba(255,255,255,0.09)", background:"rgba(255,255,255,0.025)", color:"rgba(255,255,255,0.45)", fontSize:13, fontWeight:500, padding:"17px 28px", borderRadius:999, backdropFilter:"blur(14px)" }}>
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
             Download CV
@@ -3045,7 +2838,7 @@ export default function Portfolio() {
           transition={{ delay: 1.12, duration: 0.7 }}
           style={{ display: "flex", gap: 8, justifyContent: "center", flexWrap: "wrap", marginTop: 34, maxWidth: 760 }}
         >
-          {["Java", ".NET", "React", "PostgreSQL", "SQL", "C", "GitHub", "Vercel"].map((tech) => (
+          {["C# / .NET", "TypeScript", "React", "PostgreSQL", "REST APIs", "Cloudflare", "Docker", "GitHub"].map((tech) => (
             <span key={tech} style={{ fontSize: 10, fontWeight: 700, letterSpacing: "0.13em", textTransform: "uppercase", color: "rgba(255,255,255,0.34)", border: "1px solid rgba(255,255,255,0.08)", background: "rgba(255,255,255,0.025)", borderRadius: 999, padding: "7px 14px", backdropFilter: "blur(12px)" }}>
               {tech}
             </span>
@@ -3069,23 +2862,23 @@ export default function Portfolio() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-            style={{ display: "flex", alignItems: isMobile ? "flex-start" : "center", justifyContent: "space-between", gap: isMobile ? 16 : 24, padding: isMobile ? "22px 20px" : "20px 26px", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 22, background: "rgba(255,255,255,0.025)", backdropFilter: "blur(18px)", marginBottom: 18, flexDirection: isMobile ? "column" : "row" }}
+            style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 24, padding: "20px 26px", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 22, background: "rgba(255,255,255,0.025)", backdropFilter: "blur(18px)", marginBottom: 18 }}
           >
             <div>
               <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: "0.24em", textTransform: "uppercase", color: "rgba(255,255,255,0.28)", marginBottom: 6 }}>What I build</div>
               <div style={{ fontSize: "clamp(16px, 2vw, 22px)", fontWeight: 650, letterSpacing: "-0.035em", color: "#fff" }}>Full-stack systems · Backend logic · Database-driven applications</div>
             </div>
             <Magnetic href="#projects"
-              style={{ flexShrink: 0, fontSize: 11, fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase", background: "#f5f5f7", color: "#000", padding: "13px 24px", borderRadius: 999, width:isMobile ? "100%" : "auto" }}>
+              style={{ flexShrink: 0, fontSize: 11, fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase", background: "#f5f5f7", color: "#000", padding: "13px 24px", borderRadius: 999 }}>
               Explore work
             </Magnetic>
           </motion.div>
 
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 3 }}>
+          <div className="portfolio-value-grid" style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 3 }}>
             {[
-              { v: "Full-Stack Apps", l: "React interfaces connected to backend logic, APIs, and real data." },
-              { v: "Backend Systems", l: "Java, .NET, APIs, authentication, and structured business logic." },
-              { v: "Database Projects", l: "PostgreSQL schemas, constraints, triggers, and analytical SQL." },
+              { v: "Full-Stack Apps", l: "React and TypeScript connected to backend services, APIs and persistent data." },
+              { v: "Backend Systems", l: "ASP.NET Core, Node.js, REST APIs, authorization and structured business logic." },
+              { v: "Database Projects", l: "PostgreSQL, SQL Server, MongoDB, EF Core, constraints and data modeling." },
             ].map((it, i) => (
               <motion.div key={it.v}
                 initial={{ opacity: 0, y: 14 }}
@@ -3108,6 +2901,21 @@ export default function Portfolio() {
         <PhotoShowcase />
       </div>
 
+      {/* ── ENGINEERING / SYSTEM DESIGN ── */}
+      <section className="engineering-section" aria-label="Engineering architecture">
+        <motion.div initial={{opacity:0,y:40}} whileInView={{opacity:1,y:0}} viewport={{once:true}} transition={{duration:.8}} className="engineering-intro">
+          <div className="eyebrow">BEYOND THE INTERFACE / 2026</div>
+          <h2>Designed to work.<br/><span>Engineered to last.</span></h2>
+          <p>From a user action to a secure API, structured data and production deployment — the architecture matters as much as the interface.</p>
+        </motion.div>
+        <div className="architecture-flow">
+          {[{step:"01",name:"Experience",tech:"React · TypeScript",detail:"Responsive UI and state"},{step:"02",name:"Application API",tech:"ASP.NET Core · Workers",detail:"Validation and authentication"},{step:"03",name:"Data layer",tech:"PostgreSQL · D1 · EF Core",detail:"Persistent models and ownership"},{step:"04",name:"Production",tech:"Vercel · Render · Cloudflare",detail:"Deployment and integration"}].map((node,i)=><motion.div className="architecture-node" key={node.step} initial={{opacity:0,y:45}} whileInView={{opacity:1,y:0}} viewport={{once:true}} transition={{duration:.7,delay:i*.13}} whileHover={{y:-8,borderColor:'rgba(198,174,255,.48)'}}>
+            <span>{node.step} / SYSTEM LAYER</span><h3>{node.name}</h3><strong>{node.tech}</strong><p>{node.detail}</p>
+          </motion.div>)}
+        </div>
+        <motion.div initial={{opacity:0}} whileInView={{opacity:1}} viewport={{once:true}} transition={{delay:.5,duration:1}} className="engineering-caption">REAL-WORLD EXAMPLES: UNIPILOT · GO.WEBLY · AFEKA TRAILS</motion.div>
+      </section>
+
       {/* ── SKILLS ── */}
       <section id="skills" style={{ position:"relative", zIndex:1, padding:"0 48px 150px" }}>
         <div style={{ maxWidth:1200, margin:"0 auto" }}>
@@ -3115,7 +2923,7 @@ export default function Portfolio() {
             <div style={{ fontSize:11, fontWeight:600, letterSpacing:"0.24em", textTransform:"uppercase", color:"rgba(255,255,255,0.25)", marginBottom:18 }}>Skills</div>
             <h2 style={{ fontSize:"clamp(32px,4vw,54px)", fontWeight:700, letterSpacing:"-0.045em", color:"#fff" }}>Focused strengths</h2>
           </motion.div>
-          <div style={{ display:"grid", gridTemplateColumns:"repeat(3,1fr)", gap:16 }}>
+          <div className="portfolio-skill-grid" style={{ display:"grid", gridTemplateColumns:"repeat(3,1fr)", gap:16 }}>
             {skills.map((sk,i)=>(
               <motion.div key={sk.title}
                 initial={{ opacity:0, y:28 }} whileInView={{ opacity:1, y:0 }} viewport={{ once:true }} transition={{ delay:i*0.12, duration:0.8, ease:[0.16,1,0.3,1] }}
@@ -3138,20 +2946,20 @@ export default function Portfolio() {
       <section id="projects" style={{ position:"relative", zIndex:1, padding:"0 48px 150px" }}>
         <div style={{ maxWidth:1200, margin:"0 auto" }}>
           <motion.div initial={{ opacity:0 }} whileInView={{ opacity:1 }} viewport={{ once:true }}
-            style={{ marginBottom:isMobile ? 34 : 60, display:"flex", alignItems:isMobile ? "flex-start" : "flex-end", justifyContent:"space-between", flexDirection:isMobile ? "column" : "row", gap:isMobile ? 12 : 0 }}>
+            style={{ marginBottom:60, display:"flex", alignItems:"flex-end", justifyContent:"space-between" }}>
             <div>
               <div style={{ fontSize:11, fontWeight:600, letterSpacing:"0.24em", textTransform:"uppercase", color:"rgba(255,255,255,0.25)", marginBottom:18 }}>Projects</div>
               <h2 style={{ fontSize:"clamp(32px,4vw,54px)", fontWeight:700, letterSpacing:"-0.045em", color:"#fff" }}>Selected work</h2>
             </div>
-            <span style={{ fontSize:12, color:"rgba(255,255,255,0.28)", letterSpacing:"0.08em" }}>2023 — 2026</span>
+            <span style={{ fontSize:12, color:"rgba(255,255,255,0.2)", letterSpacing:"0.08em" }}>2023 — 2026</span>
           </motion.div>
           <div style={{ display:"flex", flexDirection:"column", gap:3 }}>
             {projects.map((pr,i)=>(
-              <motion.div key={pr.title}
+              <motion.div className="portfolio-project-row" key={pr.title}
                 initial={{ opacity:0, y:22 }} whileInView={{ opacity:1, y:0 }} viewport={{ once:true }} transition={{ delay:i*0.1, duration:0.8, ease:[0.16,1,0.3,1] }}
-                whileHover={isMobile ? {} : { paddingLeft:58, background:pr.color, borderColor:"rgba(255,255,255,0.14)" }}
-                onClick={() => { const id = PROJECT_MAP[pr.num]; if (id) openProject(id); else window.open(pr.url, "_blank"); }}
-                style={{ display:"grid", gridTemplateColumns:isMobile ? "1fr" : "88px 1fr auto", alignItems:isMobile ? "start" : "center", gap:isMobile ? 18 : 36, padding:isMobile ? "24px 22px" : "32px 40px", border:"1px solid rgba(255,255,255,0.07)", background:isMobile ? "rgba(255,255,255,0.028)" : "rgba(255,255,255,0.018)", borderRadius:isMobile ? 22 : 18, cursor:"pointer", transition:"all 0.4s cubic-bezier(0.16,1,0.3,1)", position:"relative", overflow:"hidden" }}>
+                whileHover={{ paddingLeft:58, background:pr.color, borderColor:"rgba(255,255,255,0.14)" }}
+                onClick={() => { const id = PROJECT_MAP[pr.num]; if (id) openProject(id); else window.open(pr.url, "_blank", "noopener,noreferrer"); }}
+                style={{ display:"grid", gridTemplateColumns:"88px 1fr auto", alignItems:"center", gap:36, padding:"32px 40px", border:"1px solid rgba(255,255,255,0.07)", background:"rgba(255,255,255,0.018)", borderRadius:18, cursor:"none", transition:"all 0.4s cubic-bezier(0.16,1,0.3,1)", position:"relative", overflow:"hidden" }}>
                 {/* color accent */}
                 <motion.div
                   initial={{ scaleX: 0 }}
@@ -3159,20 +2967,17 @@ export default function Portfolio() {
                   transition={{ duration: 0.3, ease: [0.16,1,0.3,1] }}
                   style={{ position:"absolute", left:0, top:0, bottom:0, width:3, background:pr.color.replace('0.1','0.8').replace('0.12','0.8').replace('0.11','0.8').replace('0.09','0.8').replace('0.13','0.8'), borderRadius:"18px 0 0 18px", transformOrigin:"left", pointerEvents:"none" }}
                 />
-                <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", gap:12 }}>
-                  <span style={{ fontSize:12, fontWeight:700, letterSpacing:"0.18em", color:"rgba(255,255,255,0.28)" }}>{pr.num}</span>
-                  {isMobile && <span style={{ fontSize:12, color:"rgba(255,255,255,0.26)", letterSpacing:"0.08em" }}>{pr.year}</span>}
-                </div>
+                <span style={{ fontSize:12, fontWeight:700, letterSpacing:"0.18em", color:"rgba(255,255,255,0.18)" }}>{pr.num}</span>
                 <div>
-                  <h3 style={{ fontSize:isMobile ? 22 : 23, fontWeight:700, letterSpacing:"-0.035em", lineHeight:1.12, color:"#fff", marginBottom:11 }}>{pr.title}</h3>
-                  <p style={{ fontSize:isMobile ? 13.5 : 14, color:isMobile ? "rgba(255,255,255,0.48)" : "rgba(255,255,255,0.35)", lineHeight:1.75, marginBottom:18 }}>{pr.desc}</p>
-                  <div style={{ display:"flex", gap:8, flexWrap:"wrap" }}>
+                  <div className="project-kicker">{pr.kicker}</div><h3 style={{ fontSize:23, fontWeight:700, letterSpacing:"-0.035em", color:"#fff", marginBottom:11 }}>{pr.title}</h3>
+                  <p style={{ fontSize:14, color:"rgba(255,255,255,0.35)", lineHeight:1.75, marginBottom:18 }}>{pr.desc}</p>
+                  <div className="project-proof">{pr.proof} {pr.repo && <a href={pr.repo} target="_blank" rel="noreferrer" onClick={e => e.stopPropagation()}>↗ Source code</a>}{!["004","005","006","007","008"].includes(pr.num) && <a href={pr.url} target="_blank" rel="noreferrer" onClick={e => e.stopPropagation()}>↗ Live website</a>}</div><div style={{ display:"flex", gap:8, flexWrap:"wrap" }}>
                     {pr.tags.map(tag=>(
-                      <span key={tag} style={{ fontSize:10.5, fontWeight:600, letterSpacing:"0.09em", color:isMobile ? "rgba(255,255,255,0.42)" : "rgba(255,255,255,0.27)", border:"1px solid rgba(255,255,255,0.09)", borderRadius:999, padding:isMobile ? "5px 11px" : "4px 13px" }}>{tag}</span>
+                      <span key={tag} style={{ fontSize:11, fontWeight:600, letterSpacing:"0.1em", color:"rgba(255,255,255,0.27)", border:"1px solid rgba(255,255,255,0.09)", borderRadius:999, padding:"4px 13px" }}>{tag}</span>
                     ))}
                   </div>
                 </div>
-                <div style={{ display:isMobile ? "none" : "flex", flexDirection:"column", alignItems:"flex-end", gap:14 }}>
+                <div style={{ display:"flex", flexDirection:"column", alignItems:"flex-end", gap:14 }}>
                   <span style={{ fontSize:12, color:"rgba(255,255,255,0.2)" }}>{pr.year}</span>
                   <motion.div whileHover={{ scale:1.12, rotate:45 }} style={{ width:42, height:42, borderRadius:"50%", border:"1px solid rgba(255,255,255,0.13)", display:"flex", alignItems:"center", justifyContent:"center", color:"rgba(255,255,255,0.4)" }}>
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M7 17L17 7M7 7h10v10"/></svg>
